@@ -1,0 +1,66 @@
+syntax = "proto3";
+
+package relay.config.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/any.proto";
+
+option go_package = "github.com/edobtc/cloudkit/rpc/relay/config/v1";
+
+service Relay {
+  rpc Start(StartRequest) returns (StartResponse);
+  rpc Stop(StopRequest) returns (StopResponse);
+  rpc Config(ConfigRequest) returns (ConfigResponse);
+  rpc Status(StatusRequest) returns (StatusResponse);
+};
+
+message StartRequest { ConfigRequest config = 1; }
+message StartResponse { StatusResponse status = 1; }
+
+message StopRequest {}
+message StopResponse { StatusResponse status = 1; }
+
+message ConfigRequest {
+  int32 batchInterval = 1;
+  int32 batchSize = 2;
+
+  // Ability to disable listener type
+  repeated ListenerType listenerType = 3;
+}
+
+message ConfigResponse {
+  bool success = 1;
+  string identifer = 2;
+}
+
+message StatusRequest {}
+
+message StatusResponse {
+  int32 processed = 1;
+  int32 currentSize = 2;
+  int32 failed = 3;
+
+  repeated Listener listenerType = 4;
+
+  bool running = 9;
+
+  google.protobuf.Timestamp lastSent = 12;
+  google.protobuf.Timestamp startedAt = 13;
+}
+
+enum ListenerType {
+  LISTENER_TYPE_UNSPECIFIED = 0;
+  LISTENER_TYPE_HTTP = 1;
+  LISTENER_TYPE_WEBSOCKET = 2;
+  LISTENER_TYPE_SNS = 3;
+  LISTENER_TYPE_SQS = 4;
+  LISTENER_TYPE_KINESIS = 5;
+  LISTENER_TYPE_KAFKA = 6;
+  LISTENER_TYPE_UDP = 7;
+}
+
+message Listener {
+  ListenerType listenerType = 1;
+  bool active = 2;
+}

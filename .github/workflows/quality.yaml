@@ -1,0 +1,41 @@
+name: quality
+on:
+  pull_request:
+    branches:
+      - "main"
+    paths-ignore:
+      - 'build/env/**'
+      - 'build/terraform/**'
+      - 'docs/**'
+  push:
+    branches-ignore:
+      - "main"
+    paths-ignore:
+      - 'build/env/**'
+      - 'build/terraform/**'
+      - 'docs/**'
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - uses: actions/setup-go@v1
+        with:
+          go-version: "1.19.4" # The Go version to download (if necessary) and use.
+
+      - name: Install dependencies
+        run: sudo apt-get install -y libsodium-dev
+
+      - name: Lint
+        run: ./build/hack/lint-check.sh
+
+      - name: Test
+        run: go test ./...
+
+      - name: Coverage
+        run: ./build/hack/coverage.sh

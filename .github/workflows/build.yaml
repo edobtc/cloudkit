@@ -1,0 +1,75 @@
+name: build
+on:
+  push:
+    branches:
+      - "main"
+    paths-ignore:
+      - 'build/env/**'
+      - 'build/terraform/**'
+      - 'docs/**'
+
+jobs:
+  test:
+    name: test
+    runs-on: ubuntu-22.04
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - uses: actions/setup-go@v1
+        with:
+          go-version: "1.19.4" # The Go version to download (if necessary) and use.
+
+      - name: Install dependencies
+        run: sudo apt-get install -y libsodium-dev libczmq-dev libzmq3-dev
+
+      - name: Lint
+        run: ./build/hack/lint-check.sh
+
+      - name: Test
+        run: go test ./...
+
+      - name: Coverage
+        run: ./build/hack/coverage.sh
+
+  build:
+    name: build
+    runs-on: ubuntu-22.04
+    needs: [test]
+    if: github.event_name == 'push'
+    steps:
+        - name: Cancel Previous Runs
+          uses: styfle/cancel-workflow-action@0.11.0
+          with:
+              access_token: ${{ github.token }}
+
+        - uses: actions/checkout@v2
+
+        - name: Inject slug/short variables
+          uses: rlespinasse/github-slug-action@v3.x
+
+        # Docker build steps stuff
+        - name: Set up Docker Buildx
+          uses: docker/setup-buildx-action@v1
+
+        - name: Cache Docker layers
+          uses: actions/cache@v3
+          with:
+            path: /tmp/.buildx-cache
+            key: ${{ runner.os }}-buildx-${{ github.sha }}
+            restore-keys: |
+              ${{ runner.os }}-buildx-
+
+
+          ## TODO - add steps to build nightly/preview versions
+
+  deploy:
+    name: deploy
+    runs-on: ubuntu-22.04
+    needs: [build]
+    if: github.event_name == 'push'
+    steps:
+        - uses: actions/checkout@v2
+
+        ## TODO - add steps to release various artifacts nightly/preview versions

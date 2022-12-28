@@ -1,0 +1,53 @@
+syntax = "proto3";
+
+package controlplane.resources.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/any.proto";
+
+option go_package = "github.com/edobtc/cloudkit/rpc/controlplane/resources/v1";
+
+service Resources {
+  rpc Create(CreateRequest) returns (CreateResponse);
+  rpc List(ListRequest) returns (ListResponse);
+  rpc Status(StatusRequest) returns (StatusResponse);
+  rpc ProvisionCallback(ProvisionCallbackRequest)
+      returns (ProvisionCallbackResponse);
+};
+
+// Resource Creation
+message CreateRequest { ResourceConfiguration config = 1; }
+
+message CreateResponse { ResourceResponse status = 1; }
+
+message ResourceConfiguration {
+  string name = 1;
+  string version = 2;
+}
+
+message ResourceResponse {
+  bool success = 1;
+  string identifier = 2;
+}
+
+// Callbacks
+message ProvisionCallbackRequest {
+  string identifier = 1;
+  string certificate = 2;
+  string ip = 3;
+}
+
+message ProvisionCallbackResponse {
+  string identifier = 1;
+  string meta = 2;
+  bool received = 3;
+}
+
+// ListResources
+message ListRequest {}
+message ListResponse {}
+
+// StatusResponse
+message StatusRequest {}
+message StatusResponse {}

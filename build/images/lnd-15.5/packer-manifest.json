@@ -1,0 +1,23 @@
+{
+  "builds": [
+    {
+      "name": "lnd-15-5",
+      "builder_type": "digitalocean",
+      "build_time": 1670529056,
+      "files": null,
+      "artifact_id": "nyc3:122484569",
+      "packer_run_uuid": "3b220f6a-0554-9bc1-fb5c-6c107354bc93",
+      "custom_data": null
+    },
+    {
+      "name": "lnd-15-5",
+      "builder_type": "digitalocean",
+      "build_time": 1670530137,
+      "files": null,
+      "artifact_id": "nyc3:122485262",
+      "packer_run_uuid": "fdf46ec0-dbbe-1c29-0776-e4da04de3d78",
+      "custom_data": null
+    }
+  ],
+  "last_run_uuid": "fdf46ec0-dbbe-1c29-0776-e4da04de3d78"
+}

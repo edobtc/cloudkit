@@ -1,0 +1,38 @@
+syntax = "proto3";
+
+package events.notifications.v1;
+
+import "google/api/annotations.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/any.proto";
+
+option go_package = "github.com/edobtc/cloudkit/rpc/events/notifications/v1";
+
+service Notifications {
+  rpc Subscription(SubscriptionRequest) returns (SubscriptionResponse);
+  rpc DeleteSubscription(DeleteSubscriptionRequest)
+      returns (DeleteSubscriptionResponse);
+};
+
+message SubscriptionRequest { Subscription subscription = 1; }
+
+message SubscriptionResponse { bool success = 1; }
+
+message DeleteSubscriptionRequest { string identifier = 1; }
+
+message DeleteSubscriptionResponse { bool success = 1; }
+
+enum SubscriptionTransport {
+  SUBSCRIPTION_TRANSPORT_WEBHOOK_UNSPECIFIED = 0;
+  SUBSCRIPTION_TRANSPORT_WS = 2;
+  SUBSCRIPTION_TRANSPORT_AWS_SNS = 3;
+}
+
+message Subscription {
+  string identifier = 1;
+  string WebookURL = 2;
+  string WebSocketHost = 3;
+  string SnsArn = 4;
+
+  int32 Retries = 5;
+}

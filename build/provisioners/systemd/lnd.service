@@ -1,0 +1,15 @@
+# /etc/systemd/system/lnd.service
+
+[Unit]
+Description=LND Docker
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+WorkingDirectory=/var/app/lnd/docker
+ExecStart=/usr/local/bin/docker compose up -d
+ExecStop=/usr/local/bin/docker compose down
+TimeoutStartSec=30
+
+[Install]
+WantedBy=multi-user.target
