@@ -30,6 +30,7 @@ type Config struct {
 	DefaultNamespace string `mapstructure:"defaultNamespace"`
 
 	DigitalOceanToken string `mapstructure:"digitalOceanToken"`
+	CloudflareAPIKey  string `mapstructure:"cloudflareApiKey"`
 
 	// Server stuff
 	Listen     string `mapstructure:"listen"`
@@ -128,6 +129,7 @@ func Read() *Config {
 		_ = viper.BindEnv("streams.zeroMQListenAddr", "ZEROMQ_LISTEN_ADDR")
 
 		_ = viper.BindEnv("digitalOceanToken", "DIGITAL_OCEAN_TOKEN")
+		_ = viper.BindEnv("cloudflareApiKey", "CLOUDFLARE_API_KEY")
 
 		_ = viper.BindEnv("environment", "ENVIRONMENT")
 
