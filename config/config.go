@@ -128,7 +128,7 @@ func Read() *Config {
 		// Environment
 		_ = viper.BindEnv("streams.zeroMQListenAddr", "ZEROMQ_LISTEN_ADDR")
 
-		_ = viper.BindEnv("digitalOceanToken", "DIGITAL_OCEAN_TOKEN")
+		_ = viper.BindEnv("digitalOceanToken", "DIGITALOCEAN_TOKEN")
 		_ = viper.BindEnv("cloudflareApiKey", "CLOUDFLARE_API_KEY")
 
 		_ = viper.BindEnv("environment", "ENVIRONMENT")
