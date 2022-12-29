@@ -3,6 +3,7 @@ package droplet
 import (
 	"context"
 	"fmt"
+	"strings"
 
 	"github.com/digitalocean/godo"
 	"github.com/edobtc/cloudkit/keys/ssh"
@@ -22,9 +23,37 @@ func AddSSHKey(opt SshKeyOptions) (*godo.Key, error) {
 	return transfer, err
 }
 
+func RemoveKey(id int) error {
+	client := NewClient()
+	ctx := context.TODO()
+
+	_, err := client.Keys.DeleteByID(ctx, id)
+	return err
+}
+
 type SshKeyOptions struct {
 	Name string
 	Key  []byte
+}
+
+// Select keys will list all keys
+// and filter based on the default tags
+func SelectKeys() ([]godo.Key, error) {
+	client := NewClient()
+	ctx := context.TODO()
+	results := make([]godo.Key, 0)
+
+	keys, _, err := client.Keys.List(ctx, nil)
+	if err != nil {
+		return results, err
+	}
+
+	for _, key := range keys {
+		if strings.Contains(key.Name, "cloudkit") {
+			results = append(results, key)
+		}
+	}
+	return results, nil
 }
 
 // GenerateAndAddSSHKey will generate

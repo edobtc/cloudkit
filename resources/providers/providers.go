@@ -19,11 +19,11 @@ type Provider interface {
 
 	// Clone will copy an active resource
 	// replacing any parameters with any that are present and
-	// altered in the provisioner's suppled config
+	// altered in the Provider's supplied config
 	Clone() error
 
 	// Apply will provision a resource from some declaration
-	// or config that has been passed to the provisioner
+	// or config that has been passed to the Provider
 	Apply() error
 
 	// Annotate applies Labels or Tags for a given resource
@@ -47,6 +47,10 @@ type Provider interface {
 
 	// Stop...i dunno yet
 	Stop() error
+
+	// start
+	// restart
+	// connect
 }
 
 // EXAMPLE##BOILERPLATE
@@ -62,16 +66,16 @@ type Provider interface {
 // 	ClusterSize int64 `yaml:"clusterSize"`
 // }
 
-// // Provisioner implements a provisioner
-// type Provisioner struct {
+// // Provider implements a Provider
+// type Provider struct {
 // 	// Config holds our internal configuration options
-// 	// for the instance of the provisioner
+// 	// for the instance of the Provider
 // 	Config Config
 // }
 
-// // NewProvisioner initializes a provisioner
+// // NewProvider initializes a Provider
 // // with defaults
-// func NewProvisioner(yml []byte) providers.Provider {
+// func NewProvider(yml []byte) providers.Provider {
 // 	cfg := Config{}
 // 	err := yaml.Unmarshal(yml, &cfg)
 
@@ -79,54 +83,54 @@ type Provider interface {
 // 		return nil
 // 	}
 
-// 	return &Provisioner{Config: cfg}
+// 	return &Provider{Config: cfg}
 // }
 
 // // Select is similar to Read yet copies a selection of resources based on the Target configuration
-// func (p *Provisioner) Select() (target.Selection, error) { return target.Selection{}, nil }
+// func (p *Provider) Select() (target.Selection, error) { return target.Selection{}, nil }
 
 // // Read fetches and stores the configuration for an existing
 // // elasticache cluster. What is read of the existing resource acts
 // // as the template/configuration to implement a clone via creating a
 // // new resource with the existing output as input for a variant
-// func (p *Provisioner) Read() error {
+// func (p *Provider) Read() error {
 // 	return nil
 // }
 
 // // Clone creates a modified variant
-// func (p *Provisioner) Clone() error {
+// func (p *Provider) Clone() error {
 // 	return nil
 // }
 
 // // ProbeReadiness checks that the provisioned resource is available and
 // // ready to be included in a live experiment
-// func (p *Provisioner) ProbeReadiness() (bool, error) {
+// func (p *Provider) ProbeReadiness() (bool, error) {
 // 	return false, nil
 // }
 
 // // Teardown eradicates any resource that has been
 // // provisioned as part of a variant
-// func (p *Provisioner) Teardown() error {
+// func (p *Provider) Teardown() error {
 // 	// Needs to look up variants based on
 // 	// labels / tags which identify a variant name, experiment,
 // 	// and ideally a namespace
 // 	return nil
 // }
 
-// // Apply runs the provisioner end to end, so calls
+// // Apply runs the Provider end to end, so calls
 // // read and clone
-// func (p *Provisioner) Apply() error { return nil }
+// func (p *Provider) Apply() error { return nil }
 
-// // Cancel will abort and running or submitted provisioner
-// func (p *Provisioner) Cancel() error { return nil }
+// // Cancel will abort and running or submitted Provider
+// func (p *Provider) Cancel() error { return nil }
 
-// // Stop will stop any running provisioner
-// func (p *Provisioner) Stop() error { return nil }
+// // Stop will stop any running Provider
+// func (p *Provider) Stop() error { return nil }
 
 // // AwaitReadiness should be implemented to detect
-// // when a provisioner has finished setting up a variant
+// // when a Provider has finished setting up a variant
 // // and can begin using it in an experiment
-// func (p *Provisioner) AwaitReadiness() chan error { return make(chan error) }
+// func (p *Provider) AwaitReadiness() chan error { return make(chan error) }
 
 // // Annotate should implement applying labels or tags for a given resource type
-// func (p *Provisioner) Annotate(id string, l labels.Labels) error { return nil }
+// func (p *Provider) Annotate(id string, l labels.Labels) error { return nil }

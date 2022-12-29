@@ -2,6 +2,7 @@ package keys
 
 import (
 	"github.com/edobtc/cloudkit/cli/commands/resources/keys/create"
+	"github.com/edobtc/cloudkit/cli/commands/resources/keys/list"
 	"github.com/spf13/cobra"
 )
 
@@ -17,4 +18,5 @@ var Cmd = &cobra.Command{
 
 func init() {
 	Cmd.AddCommand(create.Cmd)
+	Cmd.AddCommand(list.Cmd)
 }

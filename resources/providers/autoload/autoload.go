@@ -17,7 +17,7 @@ var (
 	registry = map[string]autoload{
 		"aws/lambda":           lambda.NewProvisioner,
 		"cloudflare":           cloudflare.NewProvisioner,
-		"digitalocean/droplet": droplet.NewProvisioner,
+		"digitalocean/droplet": droplet.NewProvider,
 		// "aws/ec2":         ec2.NewProvisioner,
 		// "aws/elasticache": elasticache.NewProvisioner,
 		// "k8s/pods":        pods.NewProvisioner,

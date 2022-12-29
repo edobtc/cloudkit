@@ -17,7 +17,11 @@ service Resources {
 };
 
 // Resource Creation
-message CreateRequest { ResourceConfiguration config = 1; }
+message CreateRequest {
+  ResourceConfiguration config = 1;
+  bool async = 2;
+  bool skip = 3;
+}
 
 message CreateResponse { ResourceResponse status = 1; }
 
