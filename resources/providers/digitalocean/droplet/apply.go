@@ -19,13 +19,21 @@ func Apply(name string) {
 		return
 	}
 
-	fmt.Println(images)
-
 	logrus.Infof("found version: %s", images[0].Name)
+
+	key, err := CloudKitSSHKey()
+
+	if err != nil {
+		logrus.Error(err)
+		return
+	}
+
+	logrus.Infof("found key: %s", key.Fingerprint)
 
 	dp, err := CreateDroplet(ctx, &Config{
 		Name:    name,
 		ImageID: images[0].ID,
+		SSHKey:  key.Fingerprint,
 	})
 
 	if err != nil {

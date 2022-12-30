@@ -84,6 +84,7 @@ require (
 	github.com/kkdai/bstream v1.0.0 // indirect
 	github.com/klauspost/compress v1.13.6 // indirect
 	github.com/klauspost/pgzip v1.2.5 // indirect
+	github.com/kr/fs v0.1.0 // indirect
 	github.com/lib/pq v1.10.3 // indirect
 	github.com/lightninglabs/gozmq v0.0.0-20191113021534-d20a764486bf // indirect
 	github.com/lightninglabs/neutrino v0.13.0 // indirect
@@ -103,6 +104,7 @@ require (
 	github.com/modern-go/reflect2 v1.0.1 // indirect
 	github.com/nwaples/rardecode v1.1.2 // indirect
 	github.com/pierrec/lz4/v4 v4.1.8 // indirect
+	github.com/pkg/sftp v1.13.5 // indirect
 	github.com/pmezard/go-difflib v1.0.0 // indirect
 	github.com/prometheus/client_golang v1.11.0 // indirect
 	github.com/prometheus/client_model v0.2.0 // indirect

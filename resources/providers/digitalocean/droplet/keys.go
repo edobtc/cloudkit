@@ -2,6 +2,7 @@ package droplet
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"strings"
 
@@ -54,6 +55,23 @@ func SelectKeys() ([]godo.Key, error) {
 		}
 	}
 	return results, nil
+}
+
+func CloudKitSSHKey() (*godo.Key, error) {
+	client := NewClient()
+	ctx := context.TODO()
+
+	keys, _, err := client.Keys.List(ctx, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	for _, key := range keys {
+		if key.Name == "cloudkit-ssh" {
+			return &key, nil
+		}
+	}
+	return nil, errors.New("key not found")
 }
 
 // GenerateAndAddSSHKey will generate

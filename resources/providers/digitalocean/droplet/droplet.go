@@ -28,6 +28,9 @@ func CreateDroplet(ctx context.Context, cfg *Config) (*godo.Droplet, error) {
 		Backups:    true,
 		IPv6:       true,
 		Monitoring: true,
+		SSHKeys: []godo.DropletCreateSSHKey{
+			{Fingerprint: cfg.SSHKey},
+		},
 	}
 
 	newDroplet, _, err := client.Droplets.Create(ctx, createRequest)

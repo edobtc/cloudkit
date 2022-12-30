@@ -1,0 +1,69 @@
+[Application Options]
+accept-keysend=true
+accept-amp=true
+allow-circular-route=true
+protocol.wumbo-channels=true
+color=#3399DD
+max-cltv-expiry=5000
+max-commit-fee-rate-anchors=100
+minchansize=10000000
+gc-canceled-invoices-on-startup=1
+gc-canceled-invoices-on-the-fly=1
+sync-freelist=1
+stagger-initial-reconnect=1
+debuglevel=info
+
+# these are haproxy-bois
+# tlsextraip=192.34.59.121
+# tlsextraip=192.168.0.5
+
+listen=0.0.0.0
+restlisten=0.0.0.0:8080
+rpclisten=0.0.0.0:10009
+
+[caches]
+caches.channel-cache-size=35000
+
+[autopilot]
+autopilot.active=false
+
+[routing]
+; If set to true, then we'll prune a channel if only a single edge is seen as
+; being stale. This results in a more compact channel graph, and also is helpful
+; for neutrino nodes as it means they'll only maintain edges where both nodes are
+; seen as being live from it's PoV.
+routing.strictgraphpruning=1
+
+[routerrpc]
+routerrpc.apriorihopprob=0.5
+routerrpc.aprioriweight=0.75
+routerrpc.attemptcost=10
+routerrpc.attemptcostppm=1
+routerrpc.maxmchistory=100000
+routerrpc.minrtprob=0.005
+routerrpc.penaltyhalflife=3h0m0s
+
+[Tor]
+tor.active=true
+tor.v3=true
+tor.skip-proxy-for-clearnet-targets=true
+# tor.streamisolation=true
+# tor.targetipaddress=localhost
+# tor.control=localhost:9051
+
+[bolt]
+db.bolt.auto-compact=true
+db.bolt.auto-compact-min-age=0
+
+[Bitcoin]
+bitcoin.active=true
+bitcoin.node=bitcoind
+bitcoin.mainnet=true
+bitcoin.feerate=2500
+
+[Bitcoind]
+bitcoind.rpchost=={{.Bitcoind.RPCUser}}
+bitcoind.rpcuser={{.Bitcoind.RPCUser}}
+bitcoind.rpcpass=={{.Bitcoind.RPCPass}}
+bitcoind.zmqpubrawtx=tcp://{{.Bitcoind.Host}}:28332
+bitcoind.zmqpubrawblock=tcp://{{.Bitcoind.Host}}:28333
