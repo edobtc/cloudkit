@@ -20,7 +20,7 @@ func (p *CloudflareProvider) Apply() error {
 
 	ctx := context.TODO()
 	_, err = p.client.CreateDNSRecord(ctx, p.Config.ZoneID, cloudflare.DNSRecord{
-		Type:    "A",
+		Type:    p.Config.Type,
 		Name:    p.Config.Name,
 		Content: p.Config.Value,
 		TTL:     p.Config.TTL,

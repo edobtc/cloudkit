@@ -26,7 +26,7 @@ type CloudflareProvider struct {
 // NewProvider initializes a CloudflareProvider
 // with defaults
 func NewProvider(yml []byte) providers.Provider {
-	cfg := Config{}
+	cfg := DefaultConfig()
 	err := yaml.Unmarshal(yml, &cfg)
 
 	if err != nil {
@@ -34,7 +34,7 @@ func NewProvider(yml []byte) providers.Provider {
 	}
 
 	return &CloudflareProvider{
-		Config: &cfg,
+		Config: cfg,
 	}
 }
 
@@ -45,7 +45,7 @@ func NewProviderFromConfig(cfg *Config) (providers.Provider, error) {
 		return nil, err
 	}
 	return &CloudflareProvider{
-		Config: cfg,
+		Config: MergeDefaultConfig(cfg),
 		client: client,
 	}, nil
 }
