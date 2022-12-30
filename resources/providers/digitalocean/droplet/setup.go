@@ -31,6 +31,18 @@ func AddTemplate(client *sftp.Client) error {
 	return nil
 }
 
+func FetchCert(client *sftp.Client) ([]byte, error) {
+	path := fmt.Sprintf("%s/%s", LNDConfigPath, "tls.cert")
+	ff, err := client.Open(path)
+	if err != nil {
+		return nil, err
+	}
+
+	defer ff.Close()
+
+	return io.ReadAll(ff)
+}
+
 func ExtractCredentials(client *sftp.Client) (*lnd.Credentials, error) {
 	creds := lnd.NewCredentials()
 
