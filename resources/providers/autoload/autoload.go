@@ -15,8 +15,8 @@ type autoload func(cfg []byte) providers.Provider
 
 var (
 	registry = map[string]autoload{
-		"aws/lambda":           lambda.NewProvisioner,
-		"cloudflare":           cloudflare.NewProvisioner,
+		"aws/lambda":           lambda.NewProvider,
+		"cloudflare":           cloudflare.NewProvider,
 		"digitalocean/droplet": droplet.NewProvider,
 		// "aws/ec2":         ec2.NewProvisioner,
 		// "aws/elasticache": elasticache.NewProvisioner,

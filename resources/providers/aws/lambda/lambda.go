@@ -66,12 +66,12 @@ type Config struct {
 	Runtime string `yaml:"runtime"`
 }
 
-// Provisioner implements an lambda provisioner
-type Provisioner struct {
+// Provider implements a lambda Provider
+type Provider struct {
 	Target target.Target
 
 	// Config holds our internal configuration options
-	// for the instance of the provisioner
+	// for the instance of the Provider
 	Config Config
 
 	// RemoteConfig identifies the
@@ -81,9 +81,9 @@ type Provisioner struct {
 	CurrentAliasArn string
 }
 
-// NewProvisioner initializes a provisioner
+// NewProvider initializes a Provider
 // with defaults
-func NewProvisioner(yml []byte) providers.Provider {
+func NewProvider(yml []byte) providers.Provider {
 	cfg := Config{
 		Operation: DefaultOperation,
 	}
@@ -93,14 +93,14 @@ func NewProvisioner(yml []byte) providers.Provider {
 		return nil
 	}
 
-	return &Provisioner{Config: cfg}
+	return &Provider{Config: cfg}
 }
 
 // Read fetches and stores the configuration for an existing
 // lambda cluster. What is read of the existing resource acts
 // as the template/configuration to implement a clone via creating a
 // new resource with the existing output as input for a variant
-func (p *Provisioner) Read() error {
+func (p *Provider) Read() error {
 	sess := session.Must(session.NewSession(&aws.Config{
 		Region: aws.String("us-west-2"),
 	}))
@@ -126,7 +126,7 @@ func (p *Provisioner) Read() error {
 }
 
 // Clone creates a modified variant
-func (p *Provisioner) Clone() error {
+func (p *Provider) Clone() error {
 	switch p.Config.Operation {
 	case "clone":
 		return p.clone()
@@ -139,7 +139,7 @@ func (p *Provisioner) Clone() error {
 
 // clone duplicates the target function into a COMPLETELY new function
 // resource with it's own ARN
-func (p *Provisioner) clone() error {
+func (p *Provider) clone() error {
 
 	sess := session.Must(session.NewSession(&aws.Config{
 		Region: aws.String("us-west-2"),
@@ -195,7 +195,7 @@ func (p *Provisioner) clone() error {
 // Then if Canary is true, we configure an alias of the two, determine proper weights based on if variants have configured
 // weights and assign that to the traffic split. Invocations of the function that target the alias arn THEN
 // will be split between the control and variant
-func (p *Provisioner) aliasClone() error {
+func (p *Provider) aliasClone() error {
 	experiment := fmt.Sprintf("%v-hiero", time.Now().Unix())
 
 	sess := session.Must(session.NewSession(&aws.Config{
@@ -266,13 +266,13 @@ func (p *Provisioner) aliasClone() error {
 
 // ProbeReadiness checks that the provisioned resource is available and
 // ready to be included in a live experiment
-func (p *Provisioner) ProbeReadiness() (bool, error) {
+func (p *Provider) ProbeReadiness() (bool, error) {
 	return false, nil
 }
 
 // Teardown eradicates any resource that has been
 // provisioned as part of a variant
-func (p *Provisioner) Teardown() error {
+func (p *Provider) Teardown() error {
 	// Needs to look up variants based on
 	// labels / tags which identify a variant name, experiment,
 	// and ideally a namespace
@@ -291,9 +291,9 @@ func download(url string) ([]byte, error) {
 
 }
 
-// Apply runs the provisioner end to end, so calls
+// Apply runs the Provider end to end, so calls
 // read and clone
-func (p *Provisioner) Apply() error {
+func (p *Provider) Apply() error {
 	err := p.Read()
 	if err != nil {
 		return err
@@ -307,19 +307,19 @@ func (p *Provisioner) Apply() error {
 	return nil
 }
 
-// Cancel will abort and running or submitted provisioner
-func (p *Provisioner) Cancel() error { return nil }
+// Cancel will abort and running or submitted Provider
+func (p *Provider) Cancel() error { return nil }
 
-// Stop will stop any running provisioner
-func (p *Provisioner) Stop() error { return nil }
+// Stop will stop any running Provider
+func (p *Provider) Stop() error { return nil }
 
 // AwaitReadiness should be implemented to detect
-// when a provisioner has finished setting up a variant
+// when a Provider has finished setting up a variant
 // and can begin using it in an experiment
-func (p *Provisioner) AwaitReadiness() chan error { return make(chan error) }
+func (p *Provider) AwaitReadiness() chan error { return make(chan error) }
 
 // Select is similar to Read yet copies a selection of resources based on the Target configuration
-func (p *Provisioner) Select() (target.Selection, error) {
+func (p *Provider) Select() (target.Selection, error) {
 	selection := target.Selection{}
 
 	sess, err := auth.Session()
@@ -373,7 +373,7 @@ func (p *Provisioner) Select() (target.Selection, error) {
 }
 
 // Annotate should implement applying labels or tags for a given resource type
-func (p *Provisioner) Annotate(id string, l labels.Labels) error {
+func (p *Provider) Annotate(id string, l labels.Labels) error {
 	sess, err := auth.Session()
 	if err != nil {
 		return err

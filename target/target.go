@@ -14,7 +14,7 @@ const (
 // for performing some experiment operation
 type Target struct {
 	// ID (optional) should be set if we
-	// are targetting an existing resource (ie: lambda, ec2)
+	// are targeting an existing resource (ie: lambda, ec2)
 	// that we want to make a clone of for seeding the base configuration
 	// of variants with
 	//
@@ -104,6 +104,7 @@ type Resources []Resource
 type Resource struct {
 	Name   string
 	ID     string
+	Meta   interface{}
 	Labels labels.Labels
 	Config interface{}
 }

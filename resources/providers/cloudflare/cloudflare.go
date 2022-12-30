@@ -1,35 +1,31 @@
 package cloudflare
 
 import (
+	"context"
+	"log"
+
+	"github.com/cloudflare/cloudflare-go"
+	"github.com/edobtc/cloudkit/config"
 	"github.com/edobtc/cloudkit/labels"
 	"github.com/edobtc/cloudkit/resources/providers"
 	"github.com/edobtc/cloudkit/target"
 	"gopkg.in/yaml.v2"
 )
 
-// EXAMPLE##BOILERPLATE
-
-// Config holds allowed values
-// for an implemented resource provider. Any value outside of this config
-// is unable to be modified during an experiment
-type Config struct {
-	// InstanceType is the cluster compute resource
-	InstanceType string `yaml:"instanceType"`
-
-	// ClusterSize is the size of the cluster
-	ClusterSize int64 `yaml:"clusterSize"`
-}
-
-// CloudflareProvisioner implements a CloudflareProvisioner
-type CloudflareProvisioner struct {
+// CloudflareProvider implements a CloudflareProvider
+type CloudflareProvider struct {
 	// Config holds our internal configuration options
-	// for the instance of the CloudflareProvisioner
-	Config Config
+	// for the instance of the CloudflareProvider
+	Config *Config
+	client *cloudflare.API
+
+	Zone    cloudflare.Zone
+	Records []cloudflare.DNSRecord
 }
 
-// NewProvisioner initializes a CloudflareProvisioner
+// NewProvider initializes a CloudflareProvider
 // with defaults
-func NewProvisioner(yml []byte) providers.Provider {
+func NewProvider(yml []byte) providers.Provider {
 	cfg := Config{}
 	err := yaml.Unmarshal(yml, &cfg)
 
@@ -37,54 +33,99 @@ func NewProvisioner(yml []byte) providers.Provider {
 		return nil
 	}
 
-	return &CloudflareProvisioner{Config: cfg}
+	return &CloudflareProvider{
+		Config: &cfg,
+	}
 }
 
-// Select is similar to Read yet copies a selection of resources based on the Target configuration
-func (p *CloudflareProvisioner) Select() (target.Selection, error) { return target.Selection{}, nil }
+func NewProviderFromConfig(cfg *Config) (providers.Provider, error) {
+	client, err := cloudflare.NewWithAPIToken(config.Read().CloudflareAPIToken)
+
+	if err != nil {
+		return nil, err
+	}
+	return &CloudflareProvider{
+		Config: cfg,
+		client: client,
+	}, nil
+}
+
+// Select is similar to Read yet copies a selection of
+// resources based on the Target configuration
+func (p *CloudflareProvider) Select() (target.Selection, error) {
+	ctx := context.Background()
+
+	if p.Config.Zone != "" && p.Config.ZoneID == "" {
+		id, err := p.client.ZoneIDByName(p.Config.Zone)
+		if err != nil {
+			return target.Selection{}, err
+		}
+		p.Config.ZoneID = id
+	}
+
+	zone, err := p.client.ZoneDetails(ctx, p.Config.ZoneID)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	p.Zone = zone
+
+	records, err := p.client.DNSRecords(ctx, p.Config.ZoneID, cloudflare.DNSRecord{})
+	if err != nil {
+		return target.Selection{}, err
+	}
+
+	p.Records = records
+
+	return target.Selection{
+		Data: target.Resources{
+			target.Resource{
+				Name: p.Zone.Name,
+				ID:   p.Zone.ID,
+				Meta: p.Records,
+			},
+		},
+	}, nil
+}
 
 // Read fetches and stores the configuration for an existing
-// elasticache cluster. What is read of the existing resource acts
+// cloudflare zone. What is read of the existing resource acts
 // as the template/configuration to implement a clone via creating a
 // new resource with the existing output as input for a variant
-func (p *CloudflareProvisioner) Read() error {
+func (p *CloudflareProvider) Read() error {
 	return nil
 }
 
 // Clone creates a modified variant
-func (p *CloudflareProvisioner) Clone() error {
+func (p *CloudflareProvider) Clone() error {
 	return nil
 }
 
 // ProbeReadiness checks that the provisioned resource is available and
-// ready to be included in a live experiment
-func (p *CloudflareProvisioner) ProbeReadiness() (bool, error) {
+// ready to be included in a request
+func (p *CloudflareProvider) ProbeReadiness() (bool, error) {
 	return false, nil
 }
 
 // Teardown eradicates any resource that has been
 // provisioned as part of a variant
-func (p *CloudflareProvisioner) Teardown() error {
+func (p *CloudflareProvider) Teardown() error {
 	// Needs to look up variants based on
 	// labels / tags which identify a variant name, experiment,
 	// and ideally a namespace
 	return nil
 }
 
-// Apply runs the CloudflareProvisioner end to end, so calls
-// read and clone
-func (p *CloudflareProvisioner) Apply() error { return nil }
+// Cancel will abort and running or submitted CloudflareProvider
+func (p *CloudflareProvider) Cancel() error { return nil }
 
-// Cancel will abort and running or submitted CloudflareProvisioner
-func (p *CloudflareProvisioner) Cancel() error { return nil }
-
-// Stop will stop any running CloudflareProvisioner
-func (p *CloudflareProvisioner) Stop() error { return nil }
+// Stop will stop any running CloudflareProvider
+func (p *CloudflareProvider) Stop() error { return nil }
 
 // AwaitReadiness should be implemented to detect
-// when a CloudflareProvisioner has finished setting up a variant
+// when a CloudflareProvider has finished setting up a variant
 // and can begin using it in an experiment
-func (p *CloudflareProvisioner) AwaitReadiness() chan error { return make(chan error) }
+func (p *CloudflareProvider) AwaitReadiness() chan error { return make(chan error) }
 
 // Annotate should implement applying labels or tags for a given resource type
-func (p *CloudflareProvisioner) Annotate(id string, l labels.Labels) error { return nil }
+func (p *CloudflareProvider) Annotate(id string, l labels.Labels) error { return nil }
