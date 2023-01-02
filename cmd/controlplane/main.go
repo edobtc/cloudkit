@@ -14,6 +14,7 @@ import (
 
 	// Services
 	service "github.com/edobtc/cloudkit/controlplane/grpc"
+	"github.com/edobtc/cloudkit/controlplane/ws"
 	pb "github.com/edobtc/cloudkit/rpc/controlplane/resources/v1"
 
 	"github.com/edobtc/cloudkit/config"
@@ -48,8 +49,9 @@ func serveHTTP() chan bool {
 
 	r := srv.Router()
 
-	// middleware attachment
-	r.Use(namespace.DecorateNamespace)
+	// middleware attachments
+	r.Use(namespace.DecorateNamespace) // namespace middleware
+	r.Use(ws.InjectConnectionPool)     // maintenance of websocket connections
 
 	// route bindings
 	controlplane.BindRoutes(r)

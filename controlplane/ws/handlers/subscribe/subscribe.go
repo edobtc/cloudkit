@@ -3,6 +3,7 @@ package subscribe
 import (
 	"net/http"
 
+	"github.com/edobtc/cloudkit/controlplane/ws"
 	"github.com/gorilla/websocket"
 	log "github.com/sirupsen/logrus"
 )
@@ -19,19 +20,32 @@ func SubscribeCommand(w http.ResponseWriter, r *http.Request) {
 		log.Error(err)
 		return
 	}
+
 	defer c.Close()
 
-	for {
-		mt, message, err := c.ReadMessage()
-		if err != nil {
-			log.Error(err)
-			break
-		}
+	mt, message, err := c.ReadMessage()
+	if err != nil {
+		log.Error(err)
+		return
+	}
 
-		log.Info(string(message))
-		err = c.WriteMessage(mt, message)
-		if err != nil {
-			log.Error(err)
+	log.Info(string(message))
+
+	pool := r.Context().Value(ws.PoolContextKey).(*ws.ConnectionPool)
+
+	pool.Add(c)
+
+	err = c.WriteMessage(mt, []byte("subscribed"))
+
+	if err != nil {
+		log.Error(err)
+		return
+	}
+
+	for {
+		if _, _, err := c.NextReader(); err != nil {
+			// handle error form a disconnection
+			c.Close()
 			break
 		}
 	}

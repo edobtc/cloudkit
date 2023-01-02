@@ -33,6 +33,5 @@ message Subscription {
   string WebookURL = 2;
   string WebSocketHost = 3;
   string SnsArn = 4;
-
   int32 Retries = 5;
 }

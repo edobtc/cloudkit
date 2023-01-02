@@ -16,11 +16,38 @@ service Resources {
       returns (ProvisionCallbackResponse);
 };
 
+enum Target {
+  TARGET_AWS_UNSPECIFIED = 0;
+  TARGET_GCP = 1;
+  TARGET_CLOUDFLARE = 2;
+  TARGET_DIGITALOCEAN = 3;
+  TARGET_DIGITALOCEAN_DROPLET = 4;
+  TARGET_AWS_EC2 = 5;
+  TARGET_AWS_LAMBDA = 6;
+  TARGET_AWS_FARGATE = 7;
+  TARGET_LINODE = 8;
+  TARGET_KUBERNETES = 9;
+  TARGET_K8S = 10;
+}
+
+message Registration {
+  string name = 1;
+  string version = 2;
+  string identifier = 3;
+  string certificate = 4;
+  string ip = 5;
+  google.protobuf.Timestamp created = 6;
+  google.protobuf.Timestamp updated = 7;
+  google.protobuf.Any meta = 8;
+}
+
 // Resource Creation
 message CreateRequest {
   ResourceConfiguration config = 1;
-  bool async = 2;
-  bool skip = 3;
+  repeated Registration registration = 2;
+  Target target = 3;
+  bool async = 4;
+  bool skip = 5;
 }
 
 message CreateResponse { ResourceResponse status = 1; }
@@ -28,11 +55,17 @@ message CreateResponse { ResourceResponse status = 1; }
 message ResourceConfiguration {
   string name = 1;
   string version = 2;
+  string provisioner = 3;
 }
 
 message ResourceResponse {
   bool success = 1;
   string identifier = 2;
+  string name = 4;
+  string IP = 5;
+  string tls = 6;
+  google.protobuf.Any meta = 8;
+  google.protobuf.Any credentials = 9;
 }
 
 // Callbacks
@@ -40,12 +73,14 @@ message ProvisionCallbackRequest {
   string identifier = 1;
   string certificate = 2;
   string ip = 3;
+  repeated ProvisionCallbackResponse status = 4;
 }
 
 message ProvisionCallbackResponse {
   string identifier = 1;
-  string meta = 2;
+  string status = 2;
   bool received = 3;
+  google.protobuf.Any meta = 4;
 }
 
 // ListResources
@@ -55,3 +90,14 @@ message ListResponse {}
 // StatusResponse
 message StatusRequest {}
 message StatusResponse {}
+
+// Provision notifications
+// to be broadcast to the various control plane
+// notifiers
+message Notification {
+  string identifier = 1;
+  string status = 2;
+  string name = 3;
+  string ip = 4;
+  google.protobuf.Any meta = 5;
+}

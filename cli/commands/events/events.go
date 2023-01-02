@@ -2,7 +2,10 @@ package events
 
 import (
 	// "github.com/edobtc/cloudkit/cli/commands/events/generate"
+	"github.com/edobtc/cloudkit/cli/commands/events/inspect"
 	"github.com/edobtc/cloudkit/cli/commands/events/subscribe"
+	"github.com/edobtc/cloudkit/cli/commands/events/websocket"
+
 	// "github.com/edobtc/cloudkit/cli/commands/events/viewer"
 
 	"github.com/spf13/cobra"
@@ -20,6 +23,6 @@ var Cmd = &cobra.Command{
 
 func init() {
 	Cmd.AddCommand(subscribe.Cmd)
-	// Cmd.AddCommand(inspect.Cmd)
-	// Cmd.AddCommand(viewer.Cmd)
+	Cmd.AddCommand(websocket.Cmd)
+	Cmd.AddCommand(inspect.Cmd)
 }
