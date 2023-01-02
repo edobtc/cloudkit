@@ -12,6 +12,7 @@ import (
 	"github.com/edobtc/cloudkit/events/publishers/aws/sns"
 	"github.com/edobtc/cloudkit/events/publishers/filesystem"
 	"github.com/edobtc/cloudkit/events/publishers/webhook"
+	"github.com/edobtc/cloudkit/events/publishers/websocket"
 )
 
 var (
@@ -33,6 +34,8 @@ func NewPublisher(adapter string) (delivery.Publisher, error) {
 		return filesystem.NewPublisher()
 	case "webhook", "wh":
 		return webhook.NewPublisher()
+	case "websocket", "ws":
+		return websocket.NewPublisher()
 	default:
 		return nil, ErrAdapterNotFound
 	}

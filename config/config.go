@@ -39,8 +39,8 @@ type Config struct {
 	Node    Node         `mapstructure:"node"`
 	Streams StreamConfig `mapstructure:"streams"`
 
-	NotificationsTopicArn    string `mapstructure:"notificationsTopicArn"`
-	NotificationsEventsQueue string `mapstructure:"notificationsEventsQueue"`
+	// Notifications
+	Notifications Notifications `mapstructure:"notifications"`
 
 	// Environment
 	Environment string `mapstructure:"environment"`
@@ -57,6 +57,13 @@ type Config struct {
 	EventPublisherName string `mapstructure:"eventPublisherName"`
 
 	AWS AWS `mapstructure:"aws"`
+}
+
+type Notifications struct {
+	WebhookURL                string `mapstructure:"webhookUrl"`
+	SNSTopicArn               string `mapstructure:"snsTopicArn"`
+	SQSEventsQueue            string `mapstructure:"sqsEventsQueue"`
+	AllowWebsocketSubscribers bool   `mapstructure:"allowWebsocketSubscribers"`
 }
 
 type AWS struct {
@@ -117,8 +124,10 @@ func Read() *Config {
 		// Event publishers
 		viper.SetDefault("eventPublisherName", "payment-events")
 
-		viper.SetDefault("notificationsTopicArn", "arn:aws:sns:us-east-1:463883388309:payment-events")
-		viper.SetDefault("notificationsEventsQueue", "https://sqs.us-east-1.amazonaws.com/463883388309/platform-payment-events")
+		viper.SetDefault("notifications.AllowWebsocketSubscribers", true)
+		viper.SetDefault("notifications.WebhookUrl", "https://127.0.0.1:8081/webhook")
+		viper.SetDefault("notifications.TopicArn", "arn:aws:sns:us-east-1:463883388309:payment-events")
+		viper.SetDefault("notifications.EventsQueue", "https://sqs.us-east-1.amazonaws.com/463883388309/platform-payment-events")
 
 		// StreamConfig
 		viper.SetDefault("streams.zeroMQListenAddr", "tcp://127.0.0.1:5558")
@@ -129,6 +138,7 @@ func Read() *Config {
 		_ = viper.BindEnv("streams.zeroMQListenAddr", "ZEROMQ_LISTEN_ADDR")
 
 		_ = viper.BindEnv("digitalOceanToken", "DIGITALOCEAN_TOKEN")
+		_ = viper.BindEnv("linodeToken", "LINEODE_TOKEN")
 		_ = viper.BindEnv("cloudflareApiToken", "CLOUDFLARE_API_TOKEN")
 
 		_ = viper.BindEnv("environment", "ENVIRONMENT")

@@ -20,7 +20,7 @@ func NewPublisher() (*Publisher, error) {
 	return &Publisher{
 		Buffer: []byte{},
 		client: httpclient.New(),
-		URL:    config.Read().EventPublisherName,
+		URL:    config.Read().Notifications.WebhookURL,
 	}, nil
 }
 

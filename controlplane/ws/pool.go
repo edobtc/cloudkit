@@ -2,7 +2,6 @@ package ws
 
 import (
 	"context"
-	"fmt"
 	"net/http"
 
 	"github.com/gorilla/websocket"
@@ -39,7 +38,6 @@ func (p *ConnectionPool) Add(c *websocket.Conn) bool {
 //
 //	ws.Pool.Publish([]byte("wu tang killa-beez, we on a swarm"))
 func (p *ConnectionPool) Publish(msg []byte) {
-	fmt.Println(len(p.connections))
 	for c := range p.connections {
 
 		go func(client *websocket.Conn) {

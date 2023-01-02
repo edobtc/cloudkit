@@ -1,6 +1,7 @@
 package filesystem
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/edobtc/cloudkit/config"
@@ -15,7 +16,7 @@ type Publisher struct {
 }
 
 func NewPublisher() (*Publisher, error) {
-	f, err := os.Create(config.Read().EventPublisherName)
+	f, err := os.Create(fmt.Sprintf("/tmp/%s", config.Read().EventPublisherName))
 	if err != nil {
 		return nil, err
 	}
