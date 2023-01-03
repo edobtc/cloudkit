@@ -40,8 +40,10 @@ type Config struct {
 	CloudflareAPIToken string `mapstructure:"cloudflareApiToken"`
 
 	// Server stuff
-	Listen     string `mapstructure:"listen"`
-	GRPCListen string `mapstructure:"grpcListen"`
+	Listen             string `mapstructure:"listen"`
+	GRPCListen         string `mapstructure:"grpcListen"`
+	GRPCGatewayListen  string `mapstructure:"grpcGatewayListen"`
+	GRPCGatewayEnabled bool   `mapstructure:"grpcGatewayEnabled"`
 
 	Node    Node         `mapstructure:"node"`
 	Streams StreamConfig `mapstructure:"streams"`
@@ -110,6 +112,8 @@ func Read() *Config {
 
 		// Server Settings
 		viper.SetDefault("grpcListen", "0.0.0.0:8181")
+		viper.SetDefault("grpcGatewayEnabled", true)
+		viper.SetDefault("grpcGatewayListen", "0.0.0.0:8282")
 		viper.SetDefault("listen", "0.0.0.0:8081")
 
 		viper.SetDefault("enableApiKey", false)
