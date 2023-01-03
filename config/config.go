@@ -29,6 +29,13 @@ type Config struct {
 
 	DefaultNamespace string `mapstructure:"defaultNamespace"`
 
+	// DefaultPlatform (optional) is the default platform
+	// to target when creating resources, vs defaulting the to
+	// default enum (ie: TARGET_AWS_UNSPECIFIED) an override can be
+	// configured  here by the deployment operator to target some other
+	// target (eg: DigitalOcean)
+	DefaultPlatform string `mapstructure:"digitalOceanToken"`
+
 	DigitalOceanToken  string `mapstructure:"digitalOceanToken"`
 	CloudflareAPIToken string `mapstructure:"cloudflareApiToken"`
 

@@ -9,7 +9,12 @@ import "google/protobuf/any.proto";
 option go_package = "github.com/edobtc/cloudkit/rpc/controlplane/resources/v1";
 
 service Resources {
-  rpc Create(CreateRequest) returns (CreateResponse);
+  rpc Create(CreateRequest) returns (CreateResponse) {
+    option (google.api.http) = {
+      post : "/v1/resources/create"
+      body : "*"
+    };
+  };
   rpc List(ListRequest) returns (ListResponse);
   rpc Status(StatusRequest) returns (StatusResponse);
   rpc ProvisionCallback(ProvisionCallbackRequest)
