@@ -12,6 +12,7 @@ import (
 	"github.com/edobtc/cloudkit/lnd"
 	"github.com/pkg/sftp"
 	"github.com/sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/ssh"
 )
 
@@ -74,6 +75,15 @@ func Provision(ip string) ([]byte, error) {
 		return nil, err
 	}
 
+	data, err := Start(client, session)
+	if err != nil {
+		return nil, err
+	}
+
+	log.Info(data)
+
+	time.Sleep(10 & time.Second)
+
 	cert, err := FetchCert(sftpClient)
 	if err != nil {
 		return nil, err
@@ -114,7 +124,7 @@ func Start(client *ssh.Client, session *ssh.Session) (io.Writer, error) {
 }
 
 func FetchCert(client *sftp.Client) ([]byte, error) {
-	path := fmt.Sprintf("%s/%s", LNDConfigPath, "tls.cert")
+	path := fmt.Sprintf("%s/%s", LNDConfigBase, "tls.cert")
 	ff, err := client.Open(path)
 	if err != nil {
 		return nil, err
