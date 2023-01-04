@@ -57,6 +57,7 @@ type Config struct {
 	// ApiKey
 	EnableApiKey bool   `mapstructure:"enableApiKey"`
 	APIKey       string `mapstructure:"apiKey"`
+	SSHPrivKey   string `mapstructure:"sshPrivKey"`
 
 	// Redis / MemoryDB stuff for presence and key management
 	RedisHost     string `mapstructure:"redisHost"`
@@ -154,9 +155,14 @@ func Read() *Config {
 
 		_ = viper.BindEnv("environment", "ENVIRONMENT")
 
+		_ = viper.BindEnv("node.host", "BITCOIND_HOST")
+		_ = viper.BindEnv("node.rpcUser", "BITCOIND_RPC_USER")
+		_ = viper.BindEnv("node.rpcPassword", "BITCOIND_RPC_PASSWORD")
+
 		// Middleware configs
 		_ = viper.BindEnv("enableApiKey", "ENABLE_API_KEY")
 		_ = viper.BindEnv("apiKey", "API_KEY")
+		_ = viper.BindEnv("sshPrivKey", "SSH_PRIV_KEY")
 
 		_ = viper.BindEnv("redisHost", "REDIS_HOST")
 		_ = viper.BindEnv("redisPassword", "REDIS_PASSWORD")

@@ -1,0 +1,15 @@
+{
+    "config": {
+        "name": "wutang",
+        "version": "lnd-15.5",
+        "provisioner": "ssh"
+    },
+    "registrations": [
+        {
+            "name": "cloudflare",
+            "identifier": "36nodes.com"
+        }
+    ],
+    "target": "TARGET_DIGITALOCEAN_DROPLET",
+    "async": true
+}

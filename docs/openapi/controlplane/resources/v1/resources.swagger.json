@@ -88,7 +88,7 @@
         "config": {
           "$ref": "#/definitions/v1ResourceConfiguration"
         },
-        "registration": {
+        "registrations": {
           "type": "array",
           "items": {
             "$ref": "#/definitions/v1Registration"
@@ -102,6 +102,19 @@
         },
         "skip": {
           "type": "boolean"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "hooks": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "title": "simple string version of registrations"
         }
       },
       "title": "Resource Creation"
@@ -171,6 +184,12 @@
         "name": {
           "type": "string"
         },
+        "region": {
+          "type": "string"
+        },
+        "size": {
+          "type": "string"
+        },
         "version": {
           "type": "string"
         },
@@ -191,7 +210,7 @@
         "name": {
           "type": "string"
         },
-        "IP": {
+        "ip": {
           "type": "string"
         },
         "tls": {

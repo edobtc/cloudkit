@@ -12,7 +12,7 @@ var (
 )
 
 func BindRoutes(r *mux.Router) {
-	r.HandleFunc("/create", handlers.Create)
+	r.HandleFunc("/ping", handlers.Ping)
 	r.HandleFunc("/ws/subscribe", subscribe.SubscribeCommand)
 }
 

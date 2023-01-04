@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/edobtc/cloudkit/cli/commands/config/dump"
 	"github.com/edobtc/cloudkit/cli/commands/config/show"
 
 	"github.com/spf13/cobra"
@@ -17,5 +18,6 @@ var Cmd = &cobra.Command{
 }
 
 func init() {
+	Cmd.AddCommand(dump.Cmd)
 	Cmd.AddCommand(show.Cmd)
 }

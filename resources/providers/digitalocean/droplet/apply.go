@@ -2,21 +2,22 @@ package droplet
 
 import (
 	"context"
-	"fmt"
+	"errors"
 	"time"
 
 	"github.com/digitalocean/godo"
-	"github.com/edobtc/cloudkit/events/publishers/aws/sns"
+	pb "github.com/edobtc/cloudkit/rpc/controlplane/resources/v1"
+
 	"github.com/sirupsen/logrus"
 )
 
-func Apply(name string) {
+func Apply(name string) (*pb.ResourceResponse, error) {
 	ctx := context.TODO()
 
 	images, err := FilterImages(ctx, "15.5")
 	if err != nil {
 		logrus.Error(err)
-		return
+		return nil, err
 	}
 
 	logrus.Infof("found version: %s", images[0].Name)
@@ -25,7 +26,7 @@ func Apply(name string) {
 
 	if err != nil {
 		logrus.Error(err)
-		return
+		return nil, err
 	}
 
 	logrus.Infof("found key: %s", key.Fingerprint)
@@ -38,19 +39,35 @@ func Apply(name string) {
 
 	if err != nil {
 		logrus.Error(err)
-		return
+		return nil, err
 	}
 
 	logrus.Infof("creating droplet %d", dp.ID)
 
 	droplet := <-Await(dp.ID)
 
-	if droplet.Status == "active" {
-		broadcast(droplet)
-		return
+	if droplet.Status != "active" {
+		return &pb.ResourceResponse{
+			Success: false,
+		}, errors.New("droplet is not active")
 	}
 
 	logrus.Error(droplet.Status)
+
+	ip, _ := droplet.PublicIPv4()
+
+	cert, err := Provision(ip)
+	if err != nil {
+		logrus.Error(err)
+	}
+
+	return &pb.ResourceResponse{
+		Success:    true,
+		Tls:        string(cert),
+		Identifier: droplet.Name,
+		Name:       droplet.Name,
+		Ip:         ip,
+	}, nil
 }
 
 func Await(id int) chan *godo.Droplet {
@@ -81,15 +98,15 @@ func Await(id int) chan *godo.Droplet {
 	return ch
 }
 
-func broadcast(droplet *godo.Droplet) {
-	fmt.Println(droplet.PublicIPv4())
-	fmt.Println(droplet.PrivateIPv4())
+// func broadcast(droplet *godo.Droplet) {
+// 	fmt.Println(droplet.PublicIPv4())
+// 	fmt.Println(droplet.PrivateIPv4())
 
-	publisher := sns.NewPublisher()
-	ip, _ := droplet.PublicIPv4()
-	temp := fmt.Sprintf("new droplet IP %s", ip)
-	err := publisher.Send([]byte(temp))
-	if err != nil {
-		logrus.Error(err)
-	}
-}
+// 	publisher := sns.NewPublisher()
+// 	ip, _ := droplet.PublicIPv4()
+// 	temp := fmt.Sprintf("new droplet IP %s", ip)
+// 	err := publisher.Send([]byte(temp))
+// 	if err != nil {
+// 		logrus.Error(err)
+// 	}
+// }

@@ -1,12 +1,58 @@
 package droplet
 
 import (
+	"bufio"
+	"bytes"
+	"errors"
 	"fmt"
 	"io"
+	"time"
 
+	"github.com/edobtc/cloudkit/config"
 	"github.com/edobtc/cloudkit/lnd"
 	"github.com/pkg/sftp"
+	"golang.org/x/crypto/ssh"
 )
+
+const (
+	StartCommand = "/var/app/lnd"
+)
+
+// Provision uses ssh to connect to the new node
+// place an lnd config with given parameters,
+// start lnd
+// and fetch the tls cert
+func Provision(ip string) ([]byte, error) {
+	client, session, err := Connect(ip, []byte(config.Read().SSHPrivKey))
+	if err != nil {
+		return nil, errors.New("failed to connect for provisioning")
+	}
+
+	defer client.Close()
+	defer session.Close()
+
+	sftpClient, err := SFTPClient(client)
+
+	if err != nil {
+		fmt.Println(err)
+		return nil, errors.New("failed to initialize sftp client")
+	}
+	defer sftpClient.Close()
+
+	err = AddTemplate(sftpClient)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	cert, err := FetchCert(sftpClient)
+	if err != nil {
+		fmt.Println(err)
+		return nil, err
+	}
+
+	return cert, nil
+}
 
 func AddTemplate(client *sftp.Client) error {
 	wf, err := client.Create(LNDConfigPath)
@@ -29,6 +75,14 @@ func AddTemplate(client *sftp.Client) error {
 	wf.Close()
 
 	return nil
+}
+
+func Start(client *ssh.Client, session *ssh.Session) (io.Writer, error) {
+	buf := bytes.Buffer{}
+	session.Stdout = bufio.NewWriter(&buf)
+	err := session.Run(StartCommand)
+	time.Sleep(5 * time.Second)
+	return &buf, err
 }
 
 func FetchCert(client *sftp.Client) ([]byte, error) {

@@ -49,25 +49,29 @@ message Registration {
 // Resource Creation
 message CreateRequest {
   ResourceConfiguration config = 1;
-  repeated Registration registration = 2;
+  repeated Registration registrations = 2;
   Target target = 3;
   bool async = 4;
   bool skip = 5;
+  repeated string tags = 6;
+  repeated string hooks = 7; // simple string version of registrations
 }
 
 message CreateResponse { ResourceResponse status = 1; }
 
 message ResourceConfiguration {
   string name = 1;
-  string version = 2;
-  string provisioner = 3;
+  string region = 2;
+  string size = 3;
+  string version = 4;
+  string provisioner = 5;
 }
 
 message ResourceResponse {
   bool success = 1;
   string identifier = 2;
   string name = 4;
-  string IP = 5;
+  string ip = 5;
   string tls = 6;
   google.protobuf.Any meta = 8;
   google.protobuf.Any credentials = 9;
