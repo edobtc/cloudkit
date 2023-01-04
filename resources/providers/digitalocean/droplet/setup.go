@@ -23,7 +23,11 @@ const (
 // start lnd
 // and fetch the tls cert
 func Provision(ip string) ([]byte, error) {
-	client, session, err := Connect(ip, []byte(config.Read().SSHPrivKey))
+	// inject address with ssh port, eventually lets randomize and
+	// make these ports configurable
+	addr := fmt.Sprintf("%s:22", ip)
+
+	client, session, err := Connect(addr, []byte(config.Read().SSHPrivKey))
 	if err != nil {
 		return nil, errors.New("failed to connect for provisioning")
 	}
@@ -34,20 +38,17 @@ func Provision(ip string) ([]byte, error) {
 	sftpClient, err := SFTPClient(client)
 
 	if err != nil {
-		fmt.Println(err)
 		return nil, errors.New("failed to initialize sftp client")
 	}
 	defer sftpClient.Close()
 
 	err = AddTemplate(sftpClient)
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 
 	cert, err := FetchCert(sftpClient)
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 
