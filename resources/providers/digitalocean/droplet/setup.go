@@ -11,13 +11,13 @@ import (
 	"github.com/edobtc/cloudkit/config"
 	"github.com/edobtc/cloudkit/lnd"
 	"github.com/pkg/sftp"
-	"github.com/sirupsen/logrus"
+
 	log "github.com/sirupsen/logrus"
 	"golang.org/x/crypto/ssh"
 )
 
 const (
-	StartCommand        = "docker compose up -f /var/app/lnd/docker/docker-compose.yml -d"
+	StartCommand        = "chmod +x /var/app/lnd/docker/start-up.sh && /usr/bin/docker compose -f /var/app/lnd/docker/docker-compose.yml up -d"
 	maxRetry            = 8
 	provisionerInterval = 8 * time.Second
 )
@@ -33,10 +33,10 @@ func RetryProvisioner(ip string) ([]byte, error) {
 		cert, err = Provision(ip)
 		if err != nil {
 			if retries >= maxRetry {
-				logrus.Error(err)
+				log.Error(err)
 				break
 			} else {
-				logrus.Infof("attempt %d at provisioning node failed, retrying in 10 seconds...", retries)
+				log.Infof("attempt %d at provisioning node failed, retrying in 10 seconds...", retries)
 				retries++
 				time.Sleep(provisionerInterval)
 			}
@@ -77,6 +77,7 @@ func Provision(ip string) ([]byte, error) {
 
 	data, err := Start(client, session)
 	if err != nil {
+		log.Info("start failed")
 		return nil, err
 	}
 
@@ -119,7 +120,6 @@ func Start(client *ssh.Client, session *ssh.Session) (io.Writer, error) {
 	buf := bytes.Buffer{}
 	session.Stdout = bufio.NewWriter(&buf)
 	err := session.Run(StartCommand)
-	time.Sleep(5 * time.Second)
 	return &buf, err
 }
 

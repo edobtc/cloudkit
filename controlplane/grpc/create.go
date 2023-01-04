@@ -35,6 +35,7 @@ func (s *ResourcesServiceServer) Create(ctx context.Context, req *pb.CreateReque
 	for _, registration := range req.Registrations {
 		wg.Add(1)
 		go func(response *pb.ResourceResponse, registration *pb.Registration) {
+			defer wg.Done()
 			logrus.Infof("registering %s", registration.Name)
 
 			p, _ := cloudflare.NewProviderFromConfig(&cloudflare.Config{
@@ -48,6 +49,7 @@ func (s *ResourcesServiceServer) Create(ctx context.Context, req *pb.CreateReque
 			if err != nil {
 				logrus.Error(err)
 			}
+
 		}(response, registration)
 	}
 
@@ -55,6 +57,7 @@ func (s *ResourcesServiceServer) Create(ctx context.Context, req *pb.CreateReque
 		if config.Read().Notifications.AllowWebsocketSubscribers {
 			wg.Add(1)
 			go func(d []byte) {
+				defer wg.Done()
 				ws.Pool.Publish(d)
 			}(data)
 		}
@@ -62,6 +65,7 @@ func (s *ResourcesServiceServer) Create(ctx context.Context, req *pb.CreateReque
 		if config.Read().Notifications.WebhookURL != "" {
 			wg.Add(1)
 			go func(d []byte) {
+				defer wg.Done()
 				wh, err := webhook.NewPublisher()
 				if err != nil {
 					logrus.Error(err)
@@ -72,6 +76,7 @@ func (s *ResourcesServiceServer) Create(ctx context.Context, req *pb.CreateReque
 				if err != nil {
 					logrus.Error(err)
 				}
+
 			}(data)
 		}
 	} else {
