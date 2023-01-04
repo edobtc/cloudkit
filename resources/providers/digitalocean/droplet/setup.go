@@ -11,12 +11,39 @@ import (
 	"github.com/edobtc/cloudkit/config"
 	"github.com/edobtc/cloudkit/lnd"
 	"github.com/pkg/sftp"
+	"github.com/sirupsen/logrus"
 	"golang.org/x/crypto/ssh"
 )
 
 const (
-	StartCommand = "/var/app/lnd"
+	StartCommand        = "/var/app/lnd"
+	maxRetry            = 8
+	provisionerInterval = 8 * time.Second
 )
+
+func RetryProvisioner(ip string) ([]byte, error) {
+	time.Sleep(provisionerInterval)
+
+	retries := 1
+	var cert []byte
+	var err error
+
+	for {
+		cert, err = Provision(ip)
+		if err != nil {
+			if retries >= maxRetry {
+				logrus.Error(err)
+				break
+			} else {
+				logrus.Infof("attempt %d at provisioning node failed, retrying in 10 seconds...", retries)
+				retries++
+				time.Sleep(provisionerInterval)
+			}
+		}
+	}
+
+	return cert, nil
+}
 
 // Provision uses ssh to connect to the new node
 // place an lnd config with given parameters,

@@ -3,6 +3,7 @@ package droplet
 import (
 	"context"
 	"errors"
+	"fmt"
 	"time"
 
 	"github.com/digitalocean/godo"
@@ -52,11 +53,11 @@ func Apply(name string) (*pb.ResourceResponse, error) {
 		}, errors.New("droplet is not active")
 	}
 
-	logrus.Error(droplet.Status)
-
 	ip, _ := droplet.PublicIPv4()
 
-	cert, err := Provision(ip)
+	// attempt to provision the node
+	// with an initial delay and retries
+	cert, err := RetryProvisioner(ip)
 	if err != nil {
 		logrus.Error(err)
 	}
@@ -64,7 +65,7 @@ func Apply(name string) (*pb.ResourceResponse, error) {
 	return &pb.ResourceResponse{
 		Success:    true,
 		Tls:        string(cert),
-		Identifier: droplet.Name,
+		Identifier: fmt.Sprintf("%d", droplet.ID),
 		Name:       droplet.Name,
 		Ip:         ip,
 	}, nil

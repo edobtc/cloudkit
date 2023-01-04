@@ -134,7 +134,7 @@ func Read() *Config {
 		viper.SetDefault("aws.dynamodbTablePrefix", "edobtc_cloudkit_")
 
 		// Event publishers
-		viper.SetDefault("eventPublisherName", "payment-events")
+		viper.SetDefault("eventPublisherName", "provision-events")
 
 		viper.SetDefault("notifications.AllowWebsocketSubscribers", true)
 		viper.SetDefault("notifications.WebhookUrl", "https://127.0.0.1:8081/webhook")
@@ -160,9 +160,9 @@ func Read() *Config {
 		_ = viper.BindEnv("node.rpcPassword", "BITCOIND_RPC_PASSWORD")
 
 		// Notifications bindings
-		_ = viper.BindEnv("notifications.WebhookUrl", "WEBHOOK_URL")
-		_ = viper.BindEnv("notifications.TopicArn", "SNS_TOPIC_ARN")
-		_ = viper.BindEnv("notifications.EventsQueue", "SQS_EVENT_QUEUE_URL")
+		_ = viper.BindEnv("notifications.webhookUrl", "WEBHOOK_URL")
+		_ = viper.BindEnv("notifications.topicArn", "SNS_TOPIC_ARN")
+		_ = viper.BindEnv("notifications.eventsQueue", "SQS_EVENT_QUEUE_URL")
 
 		// Middleware configs
 		_ = viper.BindEnv("enableApiKey", "ENABLE_API_KEY")

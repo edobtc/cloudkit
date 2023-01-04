@@ -12,6 +12,10 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+var (
+	userAgent = fmt.Sprintf("edobtc-cloudkit-webhook-notifications/%s", version.Version)
+)
+
 type Publisher struct {
 	client *http.Client
 	URL    string
@@ -30,14 +34,14 @@ func (s *Publisher) Send(data []byte) error {
 		return err
 	}
 	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("User-Agent", fmt.Sprintf("edobtc-cloudkit-webhook-notifications/%s", version.Version))
+	req.Header.Set("User-Agent", userAgent)
 
 	resp, err := s.client.Do(req)
 	if err != nil {
 		return err
 	}
 
-	log.Info("Publisher debug: ", resp.StatusCode)
+	log.Info("webhook http status: ", resp.StatusCode)
 
 	return nil
 }
