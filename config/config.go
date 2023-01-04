@@ -159,6 +159,11 @@ func Read() *Config {
 		_ = viper.BindEnv("node.rpcUser", "BITCOIND_RPC_USER")
 		_ = viper.BindEnv("node.rpcPassword", "BITCOIND_RPC_PASSWORD")
 
+		// Notifications bindings
+		_ = viper.BindEnv("notifications.WebhookUrl", "WEBHOOK_URL")
+		_ = viper.BindEnv("notifications.TopicArn", "SNS_TOPIC_ARN")
+		_ = viper.BindEnv("notifications.EventsQueue", "SQS_EVENT_QUEUE_URL")
+
 		// Middleware configs
 		_ = viper.BindEnv("enableApiKey", "ENABLE_API_KEY")
 		_ = viper.BindEnv("apiKey", "API_KEY")
