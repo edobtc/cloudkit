@@ -16,7 +16,7 @@ import (
 )
 
 const (
-	StartCommand        = "/var/app/lnd"
+	StartCommand        = "docker compose up -f /var/app/lnd/docker/docker-compose.yml -d"
 	maxRetry            = 8
 	provisionerInterval = 8 * time.Second
 )

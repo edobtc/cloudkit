@@ -1,6 +1,7 @@
 package droplet
 
 const (
-	LNDConfigPath   = "/var/app/lnd/lnd.conf"
-	CredentialsPath = "/var/app/lnd/chain/bitcoin/mainnet/admin.macaroon"
+	LNDConfigBase   = "/var/app/lnd/docker/lnd"
+	LNDConfigPath   = "/var/app/lnd/docker/lnd/lnd.conf"
+	CredentialsPath = "/var/app/lnd/docker/lnd/data/chain/bitcoin/mainnet/admin.macaroon"
 )
