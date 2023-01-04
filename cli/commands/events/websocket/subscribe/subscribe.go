@@ -1,15 +1,16 @@
 package subscribe
 
 import (
-	"log"
+	"fmt"
 	"net/url"
 	"os"
 	"os/signal"
 	"time"
 
 	"github.com/edobtc/cloudkit/cli/commands/events/subscribe/debug"
-	"github.com/gorilla/websocket"
 
+	"github.com/gorilla/websocket"
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
 )
 
@@ -32,11 +33,11 @@ var Cmd = &cobra.Command{
 		signal.Notify(interrupt, os.Interrupt)
 
 		u := url.URL{Scheme: "ws", Host: host, Path: "/ws/subscribe"}
-		log.Printf("connecting to %s", u.String())
 
 		c, _, err := websocket.DefaultDialer.Dial(u.String(), nil)
 		if err != nil {
-			log.Fatal("dial:", err)
+			logrus.Error("dial:", err)
+			return
 		}
 		defer c.Close()
 
@@ -47,10 +48,10 @@ var Cmd = &cobra.Command{
 			for {
 				_, message, err := c.ReadMessage()
 				if err != nil {
-					log.Println("read:", err)
+					logrus.Info("read:", err)
 					return
 				}
-				log.Printf("recv: %s", message)
+				fmt.Println(string(message))
 			}
 		}()
 
@@ -64,17 +65,17 @@ var Cmd = &cobra.Command{
 			case t := <-ticker.C:
 				err := c.WriteMessage(websocket.TextMessage, []byte(t.String()))
 				if err != nil {
-					log.Println("write:", err)
+					logrus.Info("write:", err)
 					return
 				}
 			case <-interrupt:
-				log.Println("interrupt")
+				logrus.Debug("interrupt")
 
 				// Cleanly close the connection by sending a close message and then
 				// waiting (with timeout) for the server to close the connection.
 				err := c.WriteMessage(websocket.CloseMessage, websocket.FormatCloseMessage(websocket.CloseNormalClosure, ""))
 				if err != nil {
-					log.Println("write close:", err)
+					logrus.Println("write close:", err)
 					return
 				}
 				select {
