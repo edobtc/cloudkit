@@ -17,9 +17,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v3
 
-      - uses: actions/setup-go@v1
+      - uses: actions/setup-go@v3
         with:
           go-version: "1.19.4" # The Go version to download (if necessary) and use.
+          cache: true
 
       - name: Install dependencies
         run: sudo apt-get install -y libsodium-dev libczmq-dev libzmq3-dev
@@ -39,19 +40,30 @@ jobs:
     needs: [test]
     if: github.event_name == 'push'
     steps:
-        - name: Cancel Previous Runs
-          uses: styfle/cancel-workflow-action@0.11.0
+        - uses: actions/checkout@v3
+
+        - name: Login to DockerHub
+          uses: docker/login-action@v2
           with:
-              access_token: ${{ github.token }}
+            username: ${{ secrets.DOCKERHUB_USERNAME }}
+            password: ${{ secrets.DOCKERHUB_TOKEN }}
 
-        - uses: actions/checkout@v2
-
-        - name: Inject slug/short variables
-          uses: rlespinasse/github-slug-action@v3.x
-
-        # Docker build steps stuff
         - name: Set up Docker Buildx
-          uses: docker/setup-buildx-action@v1
+          uses: docker/setup-buildx-action@v2
+
+        - name: Docker meta
+          id: meta
+          uses: docker/metadata-action@v4
+          with:
+            images: edobtc/cloudkit
+            tags: |
+              type=schedule
+              type=semver,pattern={{version}}
+              type=semver,pattern={{major}}.{{minor}}
+              type=semver,pattern={{major}}
+              type=ref,event=branch
+              type=ref,event=pr
+              type=sha
 
         - name: Cache Docker layers
           uses: actions/cache@v3
@@ -61,15 +73,20 @@ jobs:
             restore-keys: |
               ${{ runner.os }}-buildx-
 
+        - name: Build and push
+          uses: docker/build-push-action@v3
+          with:
+            cache-from: |
+              type=local,src=/tmp/.buildx-cache
+            cache-to: |
+              type=local,dest=/tmp/.buildx-cache-new
+            context: .
+            file: build/docker/Dockerfile
+            push: true
+            tags: ${{ steps.meta.outputs.tags }}
+            labels: ${{ steps.meta.outputs.labels }}
 
-          ## TODO - add steps to build nightly/preview versions
-
-  deploy:
-    name: deploy
-    runs-on: ubuntu-22.04
-    needs: [build]
-    if: github.event_name == 'push'
-    steps:
-        - uses: actions/checkout@v2
-
-        ## TODO - add steps to release various artifacts nightly/preview versions
+        - name: Move cache
+          run: |
+            rm -rf /tmp/.buildx-cache
+            mv /tmp/.buildx-cache-new /tmp/.buildx-cache
