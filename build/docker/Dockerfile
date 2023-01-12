@@ -1,4 +1,4 @@
-FROM golang:1.17-alpine3.15 AS build
+FROM golang:1.19-alpine3.17 AS build
 
 RUN apk update
 
@@ -20,7 +20,7 @@ RUN go build -o ./bin/sink ./cmd/sink
 RUN go build -o ./bin/functions ./cmd/functions
 
 # Build production image
-FROM alpine:3.15
+FROM alpine:3.17
 
 RUN apk update
 RUN apk add ca-certificates
