@@ -21,6 +21,7 @@ type ResourcesClient interface {
 	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
 	List(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListResponse, error)
 	Status(ctx context.Context, in *StatusRequest, opts ...grpc.CallOption) (*StatusResponse, error)
+	Liveness(ctx context.Context, in *LivenessRequest, opts ...grpc.CallOption) (*LivenessResponse, error)
 	ProvisionCallback(ctx context.Context, in *ProvisionCallbackRequest, opts ...grpc.CallOption) (*ProvisionCallbackResponse, error)
 }
 
@@ -59,6 +60,15 @@ func (c *resourcesClient) Status(ctx context.Context, in *StatusRequest, opts ..
 	return out, nil
 }
 
+func (c *resourcesClient) Liveness(ctx context.Context, in *LivenessRequest, opts ...grpc.CallOption) (*LivenessResponse, error) {
+	out := new(LivenessResponse)
+	err := c.cc.Invoke(ctx, "/controlplane.resources.v1.Resources/Liveness", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *resourcesClient) ProvisionCallback(ctx context.Context, in *ProvisionCallbackRequest, opts ...grpc.CallOption) (*ProvisionCallbackResponse, error) {
 	out := new(ProvisionCallbackResponse)
 	err := c.cc.Invoke(ctx, "/controlplane.resources.v1.Resources/ProvisionCallback", in, out, opts...)
@@ -75,6 +85,7 @@ type ResourcesServer interface {
 	Create(context.Context, *CreateRequest) (*CreateResponse, error)
 	List(context.Context, *ListRequest) (*ListResponse, error)
 	Status(context.Context, *StatusRequest) (*StatusResponse, error)
+	Liveness(context.Context, *LivenessRequest) (*LivenessResponse, error)
 	ProvisionCallback(context.Context, *ProvisionCallbackRequest) (*ProvisionCallbackResponse, error)
 	mustEmbedUnimplementedResourcesServer()
 }
@@ -91,6 +102,9 @@ func (UnimplementedResourcesServer) List(context.Context, *ListRequest) (*ListRe
 }
 func (UnimplementedResourcesServer) Status(context.Context, *StatusRequest) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Status not implemented")
+}
+func (UnimplementedResourcesServer) Liveness(context.Context, *LivenessRequest) (*LivenessResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Liveness not implemented")
 }
 func (UnimplementedResourcesServer) ProvisionCallback(context.Context, *ProvisionCallbackRequest) (*ProvisionCallbackResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method ProvisionCallback not implemented")
@@ -162,6 +176,24 @@ func _Resources_Status_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Resources_Liveness_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(LivenessRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ResourcesServer).Liveness(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/controlplane.resources.v1.Resources/Liveness",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ResourcesServer).Liveness(ctx, req.(*LivenessRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Resources_ProvisionCallback_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ProvisionCallbackRequest)
 	if err := dec(in); err != nil {
@@ -198,6 +230,10 @@ var Resources_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Status",
 			Handler:    _Resources_Status_Handler,
+		},
+		{
+			MethodName: "Liveness",
+			Handler:    _Resources_Liveness_Handler,
 		},
 		{
 			MethodName: "ProvisionCallback",

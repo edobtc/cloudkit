@@ -47,11 +47,86 @@
           "Resources"
         ]
       }
+    },
+    "/v1/resources/list": {
+      "get": {
+        "operationId": "Resources_List",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "tags": [
+          "Resources"
+        ]
+      }
+    },
+    "/v1/resources/status": {
+      "get": {
+        "operationId": "Resources_Status",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/controlplaneresourcesv1StatusResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "identifier",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "Resources"
+        ]
+      }
     }
   },
   "definitions": {
     "controlplaneresourcesv1StatusResponse": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "resource": {
+          "$ref": "#/definitions/v1ResourceResponse"
+        }
+      }
     },
     "protobufAny": {
       "type": "object",
@@ -128,7 +203,23 @@
       }
     },
     "v1ListResponse": {
-      "type": "object"
+      "type": "object",
+      "properties": {
+        "resources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1ResourceResponse"
+          }
+        }
+      }
+    },
+    "v1LivenessResponse": {
+      "type": "object",
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
     },
     "v1ProvisionCallbackResponse": {
       "type": "object",

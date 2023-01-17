@@ -15,8 +15,17 @@ service Resources {
       body : "*"
     };
   };
-  rpc List(ListRequest) returns (ListResponse);
-  rpc Status(StatusRequest) returns (StatusResponse);
+  rpc List(ListRequest) returns (ListResponse) {
+    option (google.api.http) = {
+      get : "/v1/resources/list"
+    };
+  }
+  rpc Status(StatusRequest) returns (StatusResponse) {
+    option (google.api.http) = {
+      get : "/v1/resources/status"
+    };
+  };
+  rpc Liveness(LivenessRequest) returns (LivenessResponse);
   rpc ProvisionCallback(ProvisionCallbackRequest)
       returns (ProvisionCallbackResponse);
 };
@@ -93,12 +102,19 @@ message ProvisionCallbackResponse {
 }
 
 // ListResources
-message ListRequest {}
-message ListResponse {}
+message ListRequest {
+  string filter = 1;
+  repeated string tags = 2;
+}
+
+message ListResponse { repeated ResourceResponse resources = 1; }
 
 // StatusResponse
-message StatusRequest {}
-message StatusResponse {}
+message StatusRequest { string identifier = 1; }
+message StatusResponse { ResourceResponse resource = 1; }
+
+message LivenessRequest {}
+message LivenessResponse { string message = 1; }
 
 // Provision notifications
 // to be broadcast to the various control plane
