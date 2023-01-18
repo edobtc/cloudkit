@@ -112,10 +112,10 @@ func Read() *Config {
 		viper.SetDefault("settingsPath", "")
 
 		// Server Settings
-		viper.SetDefault("grpcListen", "0.0.0.0:8181")
-		viper.SetDefault("grpcGatewayEnabled", true)
-		viper.SetDefault("grpcGatewayListen", "0.0.0.0:8282")
-		viper.SetDefault("listen", "0.0.0.0:8081")
+		viper.SetDefault("grpcListen", "0.0.0.0:8181")        // grpc server listen
+		viper.SetDefault("grpcGatewayEnabled", true)          // enable grpc-gateway server
+		viper.SetDefault("grpcGatewayListen", "0.0.0.0:8282") // grpc-gateway server listen
+		viper.SetDefault("listen", "0.0.0.0:8081")            // http / websocket server listen
 
 		viper.SetDefault("enableApiKey", false)
 
