@@ -7,6 +7,7 @@ import (
 	"github.com/edobtc/cloudkit/resources/providers/aws/lambda"
 	"github.com/edobtc/cloudkit/resources/providers/cloudflare"
 	"github.com/edobtc/cloudkit/resources/providers/digitalocean/droplet"
+	"github.com/edobtc/cloudkit/resources/providers/docker"
 
 	"gopkg.in/yaml.v2"
 )
@@ -18,6 +19,7 @@ var (
 		"aws/lambda":           lambda.NewProvider,
 		"cloudflare":           cloudflare.NewProvider,
 		"digitalocean/droplet": droplet.NewProvider,
+		"docker":               docker.NewProvider,
 		// "aws/ec2":         ec2.NewProvisioner,
 		// "aws/elasticache": elasticache.NewProvisioner,
 		// "k8s/pods":        pods.NewProvisioner,
