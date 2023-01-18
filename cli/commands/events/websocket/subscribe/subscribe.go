@@ -7,8 +7,6 @@ import (
 	"os/signal"
 	"time"
 
-	"github.com/edobtc/cloudkit/cli/commands/events/subscribe/debug"
-
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
@@ -19,8 +17,6 @@ var (
 )
 
 func init() {
-	Cmd.AddCommand(debug.Cmd)
-
 	Cmd.Flags().StringVarP(&host, "host", "n", "127.0.0.1:8081", "host")
 }
 
