@@ -6,6 +6,7 @@ import (
 	"sync"
 
 	"github.com/edobtc/cloudkit/environment"
+	"github.com/edobtc/cloudkit/keys/ssh"
 	"github.com/edobtc/cloudkit/namespace"
 
 	log "github.com/sirupsen/logrus"
@@ -58,6 +59,8 @@ type Config struct {
 	EnableApiKey bool   `mapstructure:"enableApiKey"`
 	APIKey       string `mapstructure:"apiKey"`
 	SSHPrivKey   string `mapstructure:"sshPrivKey"`
+	SSHKeyPath   string `mapstructure:"sshKeyPath"`
+	SSHKeyName   string `mapstructure:"sshKeyName"`
 
 	// Redis / MemoryDB stuff for presence and key management
 	RedisHost     string `mapstructure:"redisHost"`
@@ -144,6 +147,9 @@ func Read() *Config {
 		// StreamConfig
 		viper.SetDefault("streams.zeroMQListenAddr", "tcp://127.0.0.1:5558")
 
+		// SSH Key Config
+		viper.SetDefault("sshKeyName", ssh.DefaultKeyName)
+
 		// Storage Configuration Options
 
 		// Environment
@@ -168,6 +174,8 @@ func Read() *Config {
 		_ = viper.BindEnv("enableApiKey", "ENABLE_API_KEY")
 		_ = viper.BindEnv("apiKey", "API_KEY")
 		_ = viper.BindEnv("sshPrivKey", "SSH_PRIV_KEY")
+		_ = viper.BindEnv("sshKeyPath", "SSH_KEY_PATH")
+		_ = viper.BindEnv("sshKeyName", "SSH_KEY_NAME")
 
 		_ = viper.BindEnv("redisHost", "REDIS_HOST")
 		_ = viper.BindEnv("redisPassword", "REDIS_PASSWORD")

@@ -7,6 +7,7 @@ import (
 	"strings"
 
 	"github.com/digitalocean/godo"
+	"github.com/edobtc/cloudkit/config"
 	"github.com/edobtc/cloudkit/keys/ssh"
 	"github.com/sirupsen/logrus"
 )
@@ -67,7 +68,7 @@ func CloudKitSSHKey() (*godo.Key, error) {
 	}
 
 	for _, key := range keys {
-		if key.Name == "cloudkit-ssh" {
+		if key.Name == config.Read().SSHKeyName {
 			return &key, nil
 		}
 	}

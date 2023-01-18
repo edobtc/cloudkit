@@ -15,6 +15,7 @@ import (
 
 const (
 	DefaultBitSize        = 4096
+	DefaultKeyName        = "cloudkit-ssh-key"
 	DefaultPrivateKeyPath = "id_rsa"
 	DefaultPublicKeyPath  = "id_rsa.pub"
 )
