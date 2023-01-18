@@ -75,6 +75,10 @@ message ResourceConfiguration {
   string size = 3;
   string version = 4;
   string provisioner = 5;
+
+  // optional label, should there be variations on a resource
+  // version (ie: docker tag)
+  string label = 6;
 }
 
 message ResourceResponse {

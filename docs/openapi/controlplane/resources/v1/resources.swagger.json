@@ -286,6 +286,10 @@
         },
         "provisioner": {
           "type": "string"
+        },
+        "label": {
+          "type": "string",
+          "title": "optional label, should there be variations on a resource\nversion (ie: docker tag)"
         }
       }
     },
