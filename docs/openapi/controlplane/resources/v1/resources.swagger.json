@@ -328,7 +328,8 @@
         "TARGET_AWS_FARGATE",
         "TARGET_LINODE",
         "TARGET_KUBERNETES",
-        "TARGET_K8S"
+        "TARGET_K8S",
+        "TARGET_DOCKER"
       ],
       "default": "TARGET_AWS_UNSPECIFIED"
     }

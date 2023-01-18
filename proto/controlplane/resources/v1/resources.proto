@@ -42,6 +42,7 @@ enum Target {
   TARGET_LINODE = 8;
   TARGET_KUBERNETES = 9;
   TARGET_K8S = 10;
+  TARGET_DOCKER = 11;
 }
 
 message Registration {
