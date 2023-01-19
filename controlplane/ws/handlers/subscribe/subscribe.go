@@ -23,17 +23,11 @@ func SubscribeCommand(w http.ResponseWriter, r *http.Request) {
 
 	defer c.Close()
 
-	mt, _, err := c.ReadMessage()
-	if err != nil {
-		log.Error(err)
-		return
-	}
-
 	pool := r.Context().Value(ws.PoolContextKey).(*ws.ConnectionPool)
 
 	pool.Add(c)
 
-	err = c.WriteMessage(mt, []byte(`
+	err = c.WriteMessage(websocket.TextMessage, []byte(`
 	  ____  |  |    ____   __ __   __| _/|  | __|__|_/  |_  /\    ______ __ __ \_ |__    ______  ____  _______ |__|\_ |__    ____    __| _/
 	_/ ___\ |  |   /  _ \ |  |  \ / __ | |  |/ /|  |\   __\ \/   /  ___/|  |  \ | __ \  /  ___/_/ ___\ \_  __ \|  | | __ \ _/ __ \  / __ |
 	\  \___ |  |__(  <_> )|  |  // /_/ | |    < |  | |  |   /\   \___ \ |  |  / | \_\ \ \___ \ \  \___  |  | \/|  | | \_\ \\  ___/ / /_/ |
