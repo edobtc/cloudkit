@@ -4,8 +4,10 @@ import (
 	"github.com/edobtc/cloudkit/labels"
 	"github.com/edobtc/cloudkit/resources/providers"
 	"github.com/edobtc/cloudkit/target"
+
+	pb "github.com/edobtc/cloudkit/rpc/controlplane/resources/v1"
+
 	log "github.com/sirupsen/logrus"
-	"gopkg.in/yaml.v2"
 )
 
 // Config holds allowed values
@@ -38,16 +40,14 @@ type Provider struct {
 
 // NewProvider initializes a Provider
 // with defaults
-func NewProvider(yml []byte) providers.Provider {
-	cfg := Config{}
-	err := yaml.Unmarshal(yml, &cfg)
-
-	if err != nil {
-		log.Error(err)
-		return nil
+func NewProvider(req *pb.CreateRequest) providers.Provider {
+	// maybe change these mappings eventually
+	cfg := Config{
+		Name:    req.Config.Name,
+		Alias:   req.Config.Name,
+		Size:    req.Config.Size,
+		ImageID: req.Config.Version,
 	}
-
-	log.Debug(cfg)
 
 	return &Provider{Config: cfg}
 }

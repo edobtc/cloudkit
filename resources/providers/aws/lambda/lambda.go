@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/edobtc/cloudkit/labels"
@@ -14,12 +15,13 @@ import (
 
 	"github.com/google/uuid"
 
+	pb "github.com/edobtc/cloudkit/rpc/controlplane/resources/v1"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/lambda"
 
 	log "github.com/sirupsen/logrus"
-	"gopkg.in/yaml.v2"
 )
 
 const (
@@ -28,6 +30,8 @@ const (
 
 	// DefaultCanaryWeight shall be an equal, uniform split
 	DefaultCanaryWeight = 0.5
+
+	DefaultSize = 512
 )
 
 var (
@@ -47,6 +51,8 @@ type Config struct {
 
 	// Canary defaults to false
 	Canary bool `yaml:"canary"`
+
+	Name string
 
 	// CanaryWeight, which should be set from the
 	CanaryWeight float64
@@ -83,17 +89,25 @@ type Provider struct {
 
 // NewProvider initializes a Provider
 // with defaults
-func NewProvider(yml []byte) providers.Provider {
-	cfg := Config{
-		Operation: DefaultOperation,
-	}
-	err := yaml.Unmarshal(yml, &cfg)
+func NewProvider(req *pb.CreateRequest) providers.Provider {
 
-	if err != nil {
-		return nil
+	cfg := Config{
+		Name:       req.Config.Name,
+		MemorySize: sizeMap(req.Config.Size),
+		Version:    req.Config.Version,
 	}
 
 	return &Provider{Config: cfg}
+}
+
+func sizeMap(size string) int64 {
+	value, err := strconv.Atoi(size)
+
+	if err != nil {
+		return DefaultSize
+	}
+
+	return int64(value)
 }
 
 // Read fetches and stores the configuration for an existing

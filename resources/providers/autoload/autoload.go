@@ -9,21 +9,28 @@ import (
 	"github.com/edobtc/cloudkit/resources/providers/digitalocean/droplet"
 	"github.com/edobtc/cloudkit/resources/providers/docker"
 
-	"gopkg.in/yaml.v2"
+	pb "github.com/edobtc/cloudkit/rpc/controlplane/resources/v1"
 )
 
-type autoload func(cfg []byte) providers.Provider
+type autoload func(req *pb.CreateRequest) providers.Provider
+
+type autoloadRegistration func(req *pb.Registration) providers.Provider
 
 var (
 	registry = map[string]autoload{
-		"aws/lambda":           lambda.NewProvider,
+
 		"cloudflare":           cloudflare.NewProvider,
 		"digitalocean/droplet": droplet.NewProvider,
 		"docker":               docker.NewProvider,
+		"aws/lambda":           lambda.NewProvider,
 		// "aws/ec2":         ec2.NewProvisioner,
 		// "aws/elasticache": elasticache.NewProvisioner,
 		// "k8s/pods":        pods.NewProvisioner,
 		// "k8s/deployment":  deployment.NewProvisioner,
+	}
+
+	registrations = map[string]autoloadRegistration{
+		"cloudflare": cloudflare.NewRegistrationProvider,
 	}
 
 	// ErrProviderNotFound is returned when we have failed to
@@ -37,15 +44,21 @@ var (
 
 // Load automatically loads a provider's provisioner from the
 // registry
-func Load(p string, cfg providers.GenericConfig) (providers.Provider, error) {
-	config, err := yaml.Marshal(cfg)
-
-	if err != nil {
-		return nil, ErrConfigSerializationFailed
-	}
+func Load(p string, req *pb.CreateRequest) (providers.Provider, error) {
 
 	if prv, ok := registry[p]; ok {
-		return prv(config), nil
+		return prv(req), nil
+	}
+
+	return nil, ErrProviderNotFound
+}
+
+// Load automatically loads a provider's provisioner from the
+// registry
+func LoadRegistration(p string, req *pb.Registration) (providers.Provider, error) {
+
+	if prv, ok := registrations[p]; ok {
+		return prv(req), nil
 	}
 
 	return nil, ErrProviderNotFound

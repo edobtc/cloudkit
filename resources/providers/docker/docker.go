@@ -16,7 +16,7 @@ import (
 	"github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/client"
 
-	"gopkg.in/yaml.v2"
+	pb "github.com/edobtc/cloudkit/rpc/controlplane/resources/v1"
 )
 
 // Config holds allowed values for an implemented
@@ -53,15 +53,12 @@ type Provider struct {
 
 // NewProvider initializes a Provider
 // with defaults
-func NewProvider(yml []byte) providers.Provider {
-	cfg := Config{}
-	err := yaml.Unmarshal(yml, &cfg)
-
-	if err != nil {
-		return nil
-	}
-
-	return &Provider{Config: cfg}
+func NewProvider(req *pb.CreateRequest) providers.Provider {
+	return &Provider{Config: Config{
+		Name:    req.Config.Name,
+		Version: req.Config.Version,
+		Tag:     "latest",
+	}}
 }
 
 func NewProviderWithConfig(cfg Config) providers.Provider {
