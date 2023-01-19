@@ -8,7 +8,7 @@ import (
 	"io"
 	"time"
 
-	"github.com/edobtc/cloudkit/config"
+	creds "github.com/edobtc/cloudkit/keys/ssh"
 	"github.com/edobtc/cloudkit/lnd"
 	"github.com/pkg/sftp"
 
@@ -55,7 +55,12 @@ func Provision(ip string) ([]byte, error) {
 	// make these ports configurable
 	addr := fmt.Sprintf("%s:22", ip)
 
-	client, session, err := Connect(addr, []byte(config.Read().SSHPrivKey))
+	cert, err := creds.FetchCert()
+	if err != nil {
+		return []byte{}, err
+	}
+
+	client, session, err := Connect(addr, cert)
 	if err != nil {
 		return nil, errors.New("failed to connect for provisioning")
 	}
@@ -85,12 +90,12 @@ func Provision(ip string) ([]byte, error) {
 
 	time.Sleep(10 & time.Second)
 
-	cert, err := FetchCert(sftpClient)
+	lndCert, err := FetchNodeCert(sftpClient)
 	if err != nil {
 		return nil, err
 	}
 
-	return cert, nil
+	return lndCert, nil
 }
 
 func AddTemplate(client *sftp.Client) error {
@@ -123,7 +128,7 @@ func Start(client *ssh.Client, session *ssh.Session) (io.Writer, error) {
 	return &buf, err
 }
 
-func FetchCert(client *sftp.Client) ([]byte, error) {
+func FetchNodeCert(client *sftp.Client) ([]byte, error) {
 	path := fmt.Sprintf("%s/%s", LNDConfigBase, "tls.cert")
 	ff, err := client.Open(path)
 	if err != nil {

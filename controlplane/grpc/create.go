@@ -15,7 +15,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 
-func (s *ResourcesServiceServer) Create(ctx context.Context, req *pb.CreateRequest) (*pb.CreateResponse, error) {
+func (s *ResourcesServiceServer) CreateDigitalOcean(ctx context.Context, req *pb.CreateRequest) (*pb.CreateResponse, error) {
 	logrus.Debug("received create resource request")
 
 	req, err := validateAndSetDefaults(req)

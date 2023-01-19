@@ -30,6 +30,8 @@ const (
 	// MaxFileCount is the max number of files allowed
 	// in any single upload
 	MaxFileCount = 5
+
+	DefaultSSHKeyName = "cloudkit-ssh-key"
 )
 
 func SetLambdaRuntimeDefaults() {

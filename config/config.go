@@ -6,7 +6,6 @@ import (
 	"sync"
 
 	"github.com/edobtc/cloudkit/environment"
-	"github.com/edobtc/cloudkit/keys/ssh"
 	"github.com/edobtc/cloudkit/namespace"
 
 	log "github.com/sirupsen/logrus"
@@ -148,7 +147,7 @@ func Read() *Config {
 		viper.SetDefault("streams.zeroMQListenAddr", "tcp://127.0.0.1:5558")
 
 		// SSH Key Config
-		viper.SetDefault("sshKeyName", ssh.DefaultKeyName)
+		viper.SetDefault("sshKeyName", DefaultSSHKeyName)
 
 		// Storage Configuration Options
 

@@ -7,10 +7,6 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestDefaultSSHKeyName(t *testing.T) {
-	assert.Equal(t, DefaultKeyName, DefaultKeyName)
-}
-
 func TestOptionsDefaults(t *testing.T) {
 	o := Options{}
 	o.SetDefaults()
