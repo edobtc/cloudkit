@@ -20,6 +20,23 @@ type autoload func(req *pb.CreateRequest) providers.Provider
 type autoloadRegistration func(req *pb.Registration) providers.Provider
 
 var (
+	targetMap = map[pb.Target]string{
+		pb.Target_TARGET_AWS_UNSPECIFIED:      "aws/ec2",
+		pb.Target_TARGET_GCP:                  "gcp/gce",
+		pb.Target_TARGET_CLOUDFLARE:           "cloudflare",
+		pb.Target_TARGET_DIGITALOCEAN:         "digitalocean/droplet",
+		pb.Target_TARGET_DIGITALOCEAN_DROPLET: "digitalocean/droplet",
+		pb.Target_TARGET_AWS_EC2:              "aws/ec2",
+		pb.Target_TARGET_AWS_LAMBDA:           "aws/lambda",
+		pb.Target_TARGET_AWS_FARGATE:          "aws/fargate",
+		pb.Target_TARGET_LINODE:               "linode",
+		pb.Target_TARGET_KUBERNETES:           "k8s/deployment",
+		pb.Target_TARGET_K8S:                  "k8s/deployment",
+		pb.Target_TARGET_DOCKER:               "docker",
+		pb.Target_TARGET_MOCK_BLANK:           "test/blank",
+		pb.Target_TARGET_MOCK_TIMED:           "test/timed",
+	}
+
 	registry = map[string]autoload{
 
 		"cloudflare":           cloudflare.NewProvider,
@@ -75,4 +92,16 @@ func LoadRegistration(p string, req *pb.Registration) (providers.Provider, error
 func Exists(p string) bool {
 	_, ok := registry[p]
 	return ok
+}
+
+func ProtoTargetMap(t *pb.Target) string {
+	if t == nil {
+		return ""
+	}
+
+	if v, ok := targetMap[*t]; ok {
+		return v
+	}
+
+	return ""
 }
