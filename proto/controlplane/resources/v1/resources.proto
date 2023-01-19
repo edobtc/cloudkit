@@ -43,6 +43,10 @@ enum Target {
   TARGET_KUBERNETES = 9;
   TARGET_K8S = 10;
   TARGET_DOCKER = 11;
+
+  // Mock/Test helper providers
+  TARGET_MOCK_BLANK = 12;
+  TARGET_MOCK_TIMED = 13;
 }
 
 message Registration {

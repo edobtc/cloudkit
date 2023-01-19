@@ -333,9 +333,12 @@
         "TARGET_LINODE",
         "TARGET_KUBERNETES",
         "TARGET_K8S",
-        "TARGET_DOCKER"
+        "TARGET_DOCKER",
+        "TARGET_MOCK_BLANK",
+        "TARGET_MOCK_TIMED"
       ],
-      "default": "TARGET_AWS_UNSPECIFIED"
+      "default": "TARGET_AWS_UNSPECIFIED",
+      "title": "- TARGET_MOCK_BLANK: Mock/Test helper providers"
     }
   }
 }
