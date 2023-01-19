@@ -14,21 +14,21 @@ import (
 // for an implemented resource provider. Any value outside of this config
 // is unable to be modified during an experiment
 type Config struct {
-	ID      int    `yaml:"id"`
-	Name    string `yaml:"name"`
-	Alias   string `yaml:"alias"`
-	Size    string `yaml:"size"`
-	SSHKey  string `yaml:"sshKey"`
-	VPC     string `yaml:"vpc"`
-	ImageID string `yaml:"_"`
+	ID      int
+	Name    string
+	Alias   string
+	Size    string
+	SSHKey  string
+	VPC     string
+	ImageID string
 
 	// Configurations
-	LND LND `yaml:"lnd"`
+	LND LND
 }
 
 type LND struct {
 	ImageID string
-	Config  string `yaml:"config"`
+	Config  string
 }
 
 // Provider implements a Provider

@@ -7,7 +7,8 @@ import (
 	"github.com/edobtc/cloudkit/resources/providers"
 	"github.com/edobtc/cloudkit/resources/providers/aws/auth"
 	"github.com/edobtc/cloudkit/target"
-	"gopkg.in/yaml.v2"
+
+	pb "github.com/edobtc/cloudkit/rpc/controlplane/resources/v1"
 
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/service/ec2"
@@ -21,16 +22,20 @@ type modified []string
 // resource provider. Any value outside of this config
 // is unable to be modified during an experiment
 type Config struct {
-	Target target.Target `yaml:"target"`
+	Target target.Target
+
+	Name string
+
+	Size string
 
 	// AMI is the amazon machine image type to use
-	AMI string `yaml:"ami"`
+	AMI string
 
 	// InstanceType is the AWS compute instance type to use
-	InstanceType string `yaml:"instanceType"`
+	InstanceType string
 
 	// Count is the size of the cluster
-	Count int64 `yaml:"count"`
+	Count int64
 }
 
 // Provisioner implements an ec2 provisioner
@@ -45,12 +50,11 @@ type Provisioner struct {
 
 // NewProvisioner initializes a provisioner
 // with defaults
-func NewProvisioner(yml []byte) providers.Provider {
-	cfg := Config{}
-	err := yaml.Unmarshal(yml, &cfg)
-
-	if err != nil {
-		return nil
+func NewProvisioner(req *pb.CreateRequest) providers.Provider {
+	cfg := Config{
+		Name:         req.Config.Name,
+		InstanceType: req.Config.Size,
+		AMI:          req.Config.Version,
 	}
 
 	return &Provisioner{Config: cfg}
@@ -84,6 +88,7 @@ func (p *Provisioner) Read() error {
 	return nil
 }
 
+// not in use
 func (p *Provisioner) modify() (modified, error) {
 	// iterate through supplied config
 	// modify outgoing request

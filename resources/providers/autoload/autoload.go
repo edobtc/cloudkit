@@ -4,10 +4,13 @@ import (
 	"errors"
 
 	"github.com/edobtc/cloudkit/resources/providers"
+	"github.com/edobtc/cloudkit/resources/providers/aws/ec2"
 	"github.com/edobtc/cloudkit/resources/providers/aws/lambda"
 	"github.com/edobtc/cloudkit/resources/providers/cloudflare"
 	"github.com/edobtc/cloudkit/resources/providers/digitalocean/droplet"
 	"github.com/edobtc/cloudkit/resources/providers/docker"
+	"github.com/edobtc/cloudkit/resources/providers/mock/blank"
+	"github.com/edobtc/cloudkit/resources/providers/mock/timed"
 
 	pb "github.com/edobtc/cloudkit/rpc/controlplane/resources/v1"
 )
@@ -23,10 +26,14 @@ var (
 		"digitalocean/droplet": droplet.NewProvider,
 		"docker":               docker.NewProvider,
 		"aws/lambda":           lambda.NewProvider,
-		// "aws/ec2":         ec2.NewProvisioner,
-		// "aws/elasticache": elasticache.NewProvisioner,
-		// "k8s/pods":        pods.NewProvisioner,
-		// "k8s/deployment":  deployment.NewProvisioner,
+		"aws/ec2":              ec2.NewProvisioner,
+
+		// mock/test providers for testing integrations
+		// when running locally and wanting to make full requests
+		// but NOT mess around with any resources
+		// also useful in a test suite
+		"test/blank": blank.NewProvisioner,
+		"test/timed": timed.NewProvisioner,
 	}
 
 	registrations = map[string]autoloadRegistration{
@@ -56,7 +63,6 @@ func Load(p string, req *pb.CreateRequest) (providers.Provider, error) {
 // Load automatically loads a provider's provisioner from the
 // registry
 func LoadRegistration(p string, req *pb.Registration) (providers.Provider, error) {
-
 	if prv, ok := registrations[p]; ok {
 		return prv(req), nil
 	}

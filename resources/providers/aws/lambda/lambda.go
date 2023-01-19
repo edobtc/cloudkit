@@ -47,10 +47,10 @@ var (
 type Config struct {
 	// Operation allows you to chose between
 	// clone or alias, default is to alias
-	Operation string `yaml:"operation"`
+	Operation string
 
 	// Canary defaults to false
-	Canary bool `yaml:"canary"`
+	Canary bool
 
 	Name string
 
@@ -58,18 +58,18 @@ type Config struct {
 	CanaryWeight float64
 
 	// MemorySize is the lambda compute resources size
-	MemorySize int64 `yaml:"memorySize"`
+	MemorySize int64
 
-	Timeout int64 `yaml:"timeout"`
+	Timeout int64
 
 	// Handler allows a different handler to be used
-	Handler string `yaml:"handler"`
+	Handler string
 
 	// Version of the deployed function
-	Version string `yaml:"version"`
+	Version string
 
 	// Function runtime
-	Runtime string `yaml:"runtime"`
+	Runtime string
 }
 
 // Provider implements a lambda Provider
