@@ -22,10 +22,10 @@ type modified []string
 // is unable to be modified during an experiment
 type Config struct {
 	// InstanceType is the cluster compute resource
-	InstanceType string `yaml:"instanceType"`
+	InstanceType string
 
 	// ClusterSize is the size of the cluster
-	ClusterSize int64 `yaml:"clusterSize"`
+	ClusterSize int64
 }
 
 // Provisioner implements an elasticache provisioner

@@ -9,7 +9,8 @@ import (
 	"github.com/edobtc/cloudkit/labels"
 	"github.com/edobtc/cloudkit/resources/providers"
 	"github.com/edobtc/cloudkit/target"
-	"gopkg.in/yaml.v2"
+
+	pb "github.com/edobtc/cloudkit/rpc/controlplane/resources/v1"
 )
 
 // CloudflareProvider implements a CloudflareProvider
@@ -25,16 +26,23 @@ type CloudflareProvider struct {
 
 // NewProvider initializes a CloudflareProvider
 // with defaults
-func NewProvider(yml []byte) providers.Provider {
-	cfg := DefaultConfig()
-	err := yaml.Unmarshal(yml, &cfg)
-
-	if err != nil {
-		return nil
-	}
-
+func NewProvider(req *pb.CreateRequest) providers.Provider {
 	return &CloudflareProvider{
-		Config: cfg,
+		Config: &Config{
+			Zone: req.Config.Name,
+		},
+	}
+}
+
+// NewRegistrationProvider initializes a CloudflareProvider
+// for use with a registration callback vs a full blown
+// provider implementation, extracting and mapping the correct
+// part of the request configuration
+func NewRegistrationProvider(req *pb.Registration) providers.Provider {
+	return &CloudflareProvider{
+		Config: &Config{
+			Zone: req.Identifier,
+		},
 	}
 }
 

@@ -16,29 +16,29 @@ import (
 	"github.com/docker/docker/api/types/network"
 	"github.com/docker/docker/client"
 
-	"gopkg.in/yaml.v2"
+	pb "github.com/edobtc/cloudkit/rpc/controlplane/resources/v1"
 )
 
 // Config holds allowed values for an implemented
 // resource provider. Any value outside of this config
 // is unable to be modified during an experiment
 type Config struct {
-	Target target.Target `yaml:"target"`
+	Target target.Target
 
 	// Name is the name of the container
-	Name string `yaml:"name"`
+	Name string
 
 	// Version is the version of the image or container
-	Version string `yaml:"version"`
+	Version string
 
 	// Image is hte image name of the docker image
-	Image string `yaml:"tag"`
+	Image string
 
 	// Tag is the docker tag, defaults to :latest
-	Tag string `yaml:"image"`
+	Tag string
 
 	// ID is the id of the running container
-	ID string `yaml:"id"`
+	ID string
 }
 
 // Provider implements an docker Provider
@@ -53,15 +53,12 @@ type Provider struct {
 
 // NewProvider initializes a Provider
 // with defaults
-func NewProvider(yml []byte) providers.Provider {
-	cfg := Config{}
-	err := yaml.Unmarshal(yml, &cfg)
-
-	if err != nil {
-		return nil
-	}
-
-	return &Provider{Config: cfg}
+func NewProvider(req *pb.CreateRequest) providers.Provider {
+	return &Provider{Config: Config{
+		Name:    req.Config.Name,
+		Version: req.Config.Version,
+		Tag:     "latest",
+	}}
 }
 
 func NewProviderWithConfig(cfg Config) providers.Provider {

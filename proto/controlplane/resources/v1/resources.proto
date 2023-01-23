@@ -43,6 +43,10 @@ enum Target {
   TARGET_KUBERNETES = 9;
   TARGET_K8S = 10;
   TARGET_DOCKER = 11;
+
+  // Mock/Test helper providers
+  TARGET_MOCK_BLANK = 12;
+  TARGET_MOCK_TIMED = 13;
 }
 
 message Registration {
@@ -75,6 +79,10 @@ message ResourceConfiguration {
   string size = 3;
   string version = 4;
   string provisioner = 5;
+
+  // optional label, should there be variations on a resource
+  // version (ie: docker tag)
+  string label = 6;
 }
 
 message ResourceResponse {

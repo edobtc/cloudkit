@@ -70,17 +70,17 @@ const (
 // Guard is a mechanism for watching some data and using that
 // as signal to see if
 type Guard struct {
-	Kind               Kind          `yaml:"kind" json:"kind"`
-	Name               string        `yaml:"name" json:"name"`
-	Status             Status        `yaml:"status" json:"status"`
-	StatusDistribution []Status      `yaml:"statusDist" json:"statusDist"`
-	Count              int           `yaml:"count" json:"count"`
-	Threshold          int           `yaml:"threshold" json:"threshold"`
-	Interval           time.Duration `yaml:"interval" json:"interval"`
-	WindowSize         int           `yaml:"windowSize" json:"windowSize"`
-	Tolerance          float32       `yaml:"tolerance" json:"tolerance"`
-	Spec               interface{}   `yaml:"spec" json:"spec"`
-	Integration        string        `yaml:"integration" json:"integration"`
+	Kind               Kind          `json:"kind"`
+	Name               string        `json:"name"`
+	Status             Status        `json:"status"`
+	StatusDistribution []Status      `json:"statusDist"`
+	Count              int           `json:"count"`
+	Threshold          int           `json:"threshold"`
+	Interval           time.Duration `json:"interval"`
+	WindowSize         int           `json:"windowSize"`
+	Tolerance          float32       `json:"tolerance"`
+	Spec               interface{}   `json:"spec"`
+	Integration        string        `json:"integration"`
 	done               chan bool
 	notifier           chan Status
 	tick               *time.Ticker

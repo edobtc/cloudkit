@@ -7,8 +7,9 @@ import (
 	"github.com/edobtc/cloudkit/resources/providers"
 	"github.com/edobtc/cloudkit/target"
 
+	pb "github.com/edobtc/cloudkit/rpc/controlplane/resources/v1"
+
 	log "github.com/sirupsen/logrus"
-	"gopkg.in/yaml.v2"
 )
 
 const sleepTime = 4 * time.Second
@@ -17,13 +18,12 @@ const sleepTime = 4 * time.Second
 // for an implemented resource provider. Any value outside of this config
 // is unable to be modified during an experiment
 type Config struct {
-	Name string `yaml:"name"`
+	Name string
 
-	// InstanceType is the cluster compute resource
-	InstanceType string `yaml:"instanceType"`
+	// Size is the cluster compute resource
+	Size string
 
-	// ClusterSize is the size of the cluster
-	ClusterSize int64 `yaml:"clusterSize"`
+	Version string
 }
 
 // Provisioner implements a provisioner
@@ -35,16 +35,12 @@ type Provisioner struct {
 
 // NewProvisioner initializes a provisioner
 // with defaults
-func NewProvisioner(yml []byte) providers.Provider {
-	cfg := Config{}
-	err := yaml.Unmarshal(yml, &cfg)
-
-	if err != nil {
-		log.Error(err)
-		return nil
+func NewProvisioner(req *pb.CreateRequest) providers.Provider {
+	cfg := Config{
+		Name:    req.Config.Name,
+		Size:    req.Config.Size,
+		Version: req.Config.Version,
 	}
-
-	log.Debug(cfg)
 
 	return &Provisioner{Config: cfg}
 }

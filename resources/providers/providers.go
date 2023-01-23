@@ -60,10 +60,10 @@ type Provider interface {
 // // is unable to be modified during an experiment
 // type Config struct {
 // 	// InstanceType is the cluster compute resource
-// 	InstanceType string `yaml:"instanceType"`
+// 	InstanceType string
 
 // 	// ClusterSize is the size of the cluster
-// 	ClusterSize int64 `yaml:"clusterSize"`
+// 	ClusterSize int64
 // }
 
 // // Provider implements a Provider
@@ -75,14 +75,7 @@ type Provider interface {
 
 // // NewProvider initializes a Provider
 // // with defaults
-// func NewProvider(yml []byte) providers.Provider {
-// 	cfg := Config{}
-// 	err := yaml.Unmarshal(yml, &cfg)
-
-// 	if err != nil {
-// 		return nil
-// 	}
-
+// func NewProvider(re &pb.CreateRequest) providers.Provider {
 // 	return &Provider{Config: cfg}
 // }
 

@@ -9,6 +9,8 @@ import (
 	"github.com/edobtc/cloudkit/resources/providers/autoload"
 	"github.com/edobtc/cloudkit/target"
 
+	pb "github.com/edobtc/cloudkit/rpc/controlplane/resources/v1"
+
 	"github.com/google/uuid"
 
 	"github.com/pkg/errors"
@@ -83,8 +85,7 @@ func NewAgent(prov providers.Provider) *Agent {
 func Parse(p plan.Definition) ([]*Agent, error) {
 	workflow := []*Agent{}
 
-	c := providers.GenericConfig{}
-	c["target"] = p.Spec.Target
+	c := &pb.CreateRequest{}
 
 	prov, err := autoload.Load(p.Spec.Provider, c)
 	if err != nil {

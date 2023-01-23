@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"time"
 
 	"github.com/edobtc/cloudkit/labels"
@@ -14,12 +15,13 @@ import (
 
 	"github.com/google/uuid"
 
+	pb "github.com/edobtc/cloudkit/rpc/controlplane/resources/v1"
+
 	"github.com/aws/aws-sdk-go/aws"
 	"github.com/aws/aws-sdk-go/aws/session"
 	"github.com/aws/aws-sdk-go/service/lambda"
 
 	log "github.com/sirupsen/logrus"
-	"gopkg.in/yaml.v2"
 )
 
 const (
@@ -28,6 +30,8 @@ const (
 
 	// DefaultCanaryWeight shall be an equal, uniform split
 	DefaultCanaryWeight = 0.5
+
+	DefaultSize = 512
 )
 
 var (
@@ -43,27 +47,29 @@ var (
 type Config struct {
 	// Operation allows you to chose between
 	// clone or alias, default is to alias
-	Operation string `yaml:"operation"`
+	Operation string
 
 	// Canary defaults to false
-	Canary bool `yaml:"canary"`
+	Canary bool
+
+	Name string
 
 	// CanaryWeight, which should be set from the
 	CanaryWeight float64
 
 	// MemorySize is the lambda compute resources size
-	MemorySize int64 `yaml:"memorySize"`
+	MemorySize int64
 
-	Timeout int64 `yaml:"timeout"`
+	Timeout int64
 
 	// Handler allows a different handler to be used
-	Handler string `yaml:"handler"`
+	Handler string
 
 	// Version of the deployed function
-	Version string `yaml:"version"`
+	Version string
 
 	// Function runtime
-	Runtime string `yaml:"runtime"`
+	Runtime string
 }
 
 // Provider implements a lambda Provider
@@ -83,17 +89,25 @@ type Provider struct {
 
 // NewProvider initializes a Provider
 // with defaults
-func NewProvider(yml []byte) providers.Provider {
-	cfg := Config{
-		Operation: DefaultOperation,
-	}
-	err := yaml.Unmarshal(yml, &cfg)
+func NewProvider(req *pb.CreateRequest) providers.Provider {
 
-	if err != nil {
-		return nil
+	cfg := Config{
+		Name:       req.Config.Name,
+		MemorySize: sizeMap(req.Config.Size),
+		Version:    req.Config.Version,
 	}
 
 	return &Provider{Config: cfg}
+}
+
+func sizeMap(size string) int64 {
+	value, err := strconv.Atoi(size)
+
+	if err != nil {
+		return DefaultSize
+	}
+
+	return int64(value)
 }
 
 // Read fetches and stores the configuration for an existing
