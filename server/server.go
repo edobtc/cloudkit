@@ -47,6 +47,7 @@ func NewServer() Server {
 
 	// basic http status
 	r.HandleFunc("/status", meta.Status)
+	r.HandleFunc("/healthz", meta.Status) // assimilate to borg
 
 	return Server{
 		http: http.Server{
