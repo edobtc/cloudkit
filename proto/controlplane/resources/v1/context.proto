@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+option go_package = "github.com/edobtc/cloudkit/rpc/controlplane/resources/v1";
+
+message Context {
+  string identifier = 1;
+  string name = 2;
+  bool active = 3;
+}

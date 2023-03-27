@@ -120,6 +120,37 @@
     }
   },
   "definitions": {
+    "Context": {
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "active": {
+          "type": "boolean"
+        }
+      }
+    },
+    "Namespace": {
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "type": "string"
+        },
+        "owner": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "controlplaneresourcesv1StatusResponse": {
       "type": "object",
       "properties": {
@@ -190,6 +221,12 @@
             "type": "string"
           },
           "title": "simple string version of registrations"
+        },
+        "context": {
+          "$ref": "#/definitions/Context"
+        },
+        "ns": {
+          "$ref": "#/definitions/Namespace"
         }
       },
       "title": "Resource Creation"

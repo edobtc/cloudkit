@@ -5,6 +5,8 @@ package controlplane.resources.v1;
 import "google/api/annotations.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/any.proto";
+import "controlplane/resources/v1/context.proto";
+import "controlplane/resources/v1/namespace.proto";
 
 option go_package = "github.com/edobtc/cloudkit/rpc/controlplane/resources/v1";
 
@@ -69,6 +71,8 @@ message CreateRequest {
   bool skip = 5;
   repeated string tags = 6;
   repeated string hooks = 7; // simple string version of registrations
+  optional Context context = 8;
+  optional Namespace ns = 9;
 }
 
 message CreateResponse { ResourceResponse status = 1; }
