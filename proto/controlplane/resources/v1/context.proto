@@ -1,9 +1,23 @@
 syntax = "proto3";
 
+import "controlplane/resources/v1/namespace.proto";
+
 option go_package = "github.com/edobtc/cloudkit/rpc/controlplane/resources/v1";
 
 message Context {
   string identifier = 1;
   string name = 2;
   bool active = 3;
+  Namespace namespace = 4;
 }
+
+message CurrentContextRequest {}
+
+message SetContextRequest { Context context = 1; }
+
+message SetContextResponse {
+  Context context = 1;
+  bool success = 2;
+}
+
+message CurrentContextResponse { Context context = 1; }

@@ -25,9 +25,10 @@ type Context struct {
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
 
-	Identifier string `protobuf:"bytes,1,opt,name=identifier,proto3" json:"identifier,omitempty"`
-	Name       string `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Active     bool   `protobuf:"varint,3,opt,name=active,proto3" json:"active,omitempty"`
+	Identifier string     `protobuf:"bytes,1,opt,name=identifier,proto3" json:"identifier,omitempty"`
+	Name       string     `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Active     bool       `protobuf:"varint,3,opt,name=active,proto3" json:"active,omitempty"`
+	Namespace  *Namespace `protobuf:"bytes,4,opt,name=namespace,proto3" json:"namespace,omitempty"`
 }
 
 func (x *Context) Reset() {
@@ -83,22 +84,235 @@ func (x *Context) GetActive() bool {
 	return false
 }
 
+func (x *Context) GetNamespace() *Namespace {
+	if x != nil {
+		return x.Namespace
+	}
+	return nil
+}
+
+type CurrentContextRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+}
+
+func (x *CurrentContextRequest) Reset() {
+	*x = CurrentContextRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_controlplane_resources_v1_context_proto_msgTypes[1]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CurrentContextRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CurrentContextRequest) ProtoMessage() {}
+
+func (x *CurrentContextRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_controlplane_resources_v1_context_proto_msgTypes[1]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CurrentContextRequest.ProtoReflect.Descriptor instead.
+func (*CurrentContextRequest) Descriptor() ([]byte, []int) {
+	return file_controlplane_resources_v1_context_proto_rawDescGZIP(), []int{1}
+}
+
+type SetContextRequest struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Context *Context `protobuf:"bytes,1,opt,name=context,proto3" json:"context,omitempty"`
+}
+
+func (x *SetContextRequest) Reset() {
+	*x = SetContextRequest{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_controlplane_resources_v1_context_proto_msgTypes[2]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SetContextRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SetContextRequest) ProtoMessage() {}
+
+func (x *SetContextRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_controlplane_resources_v1_context_proto_msgTypes[2]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SetContextRequest.ProtoReflect.Descriptor instead.
+func (*SetContextRequest) Descriptor() ([]byte, []int) {
+	return file_controlplane_resources_v1_context_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *SetContextRequest) GetContext() *Context {
+	if x != nil {
+		return x.Context
+	}
+	return nil
+}
+
+type SetContextResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Context *Context `protobuf:"bytes,1,opt,name=context,proto3" json:"context,omitempty"`
+	Success bool     `protobuf:"varint,2,opt,name=success,proto3" json:"success,omitempty"`
+}
+
+func (x *SetContextResponse) Reset() {
+	*x = SetContextResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_controlplane_resources_v1_context_proto_msgTypes[3]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *SetContextResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SetContextResponse) ProtoMessage() {}
+
+func (x *SetContextResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_controlplane_resources_v1_context_proto_msgTypes[3]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SetContextResponse.ProtoReflect.Descriptor instead.
+func (*SetContextResponse) Descriptor() ([]byte, []int) {
+	return file_controlplane_resources_v1_context_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *SetContextResponse) GetContext() *Context {
+	if x != nil {
+		return x.Context
+	}
+	return nil
+}
+
+func (x *SetContextResponse) GetSuccess() bool {
+	if x != nil {
+		return x.Success
+	}
+	return false
+}
+
+type CurrentContextResponse struct {
+	state         protoimpl.MessageState
+	sizeCache     protoimpl.SizeCache
+	unknownFields protoimpl.UnknownFields
+
+	Context *Context `protobuf:"bytes,1,opt,name=context,proto3" json:"context,omitempty"`
+}
+
+func (x *CurrentContextResponse) Reset() {
+	*x = CurrentContextResponse{}
+	if protoimpl.UnsafeEnabled {
+		mi := &file_controlplane_resources_v1_context_proto_msgTypes[4]
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		ms.StoreMessageInfo(mi)
+	}
+}
+
+func (x *CurrentContextResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CurrentContextResponse) ProtoMessage() {}
+
+func (x *CurrentContextResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_controlplane_resources_v1_context_proto_msgTypes[4]
+	if protoimpl.UnsafeEnabled && x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CurrentContextResponse.ProtoReflect.Descriptor instead.
+func (*CurrentContextResponse) Descriptor() ([]byte, []int) {
+	return file_controlplane_resources_v1_context_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *CurrentContextResponse) GetContext() *Context {
+	if x != nil {
+		return x.Context
+	}
+	return nil
+}
+
 var File_controlplane_resources_v1_context_proto protoreflect.FileDescriptor
 
 var file_controlplane_resources_v1_context_proto_rawDesc = []byte{
 	0x0a, 0x27, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x70, 0x6c, 0x61, 0x6e, 0x65, 0x2f, 0x72,
 	0x65, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x73, 0x2f, 0x76, 0x31, 0x2f, 0x63, 0x6f, 0x6e, 0x74,
-	0x65, 0x78, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x22, 0x55, 0x0a, 0x07, 0x43, 0x6f, 0x6e,
-	0x74, 0x65, 0x78, 0x74, 0x12, 0x1e, 0x0a, 0x0a, 0x69, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x66, 0x69,
-	0x65, 0x72, 0x18, 0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0a, 0x69, 0x64, 0x65, 0x6e, 0x74, 0x69,
-	0x66, 0x69, 0x65, 0x72, 0x12, 0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01,
-	0x28, 0x09, 0x52, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x63, 0x74, 0x69,
-	0x76, 0x65, 0x18, 0x03, 0x20, 0x01, 0x28, 0x08, 0x52, 0x06, 0x61, 0x63, 0x74, 0x69, 0x76, 0x65,
-	0x42, 0x3a, 0x5a, 0x38, 0x67, 0x69, 0x74, 0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65,
-	0x64, 0x6f, 0x62, 0x74, 0x63, 0x2f, 0x63, 0x6c, 0x6f, 0x75, 0x64, 0x6b, 0x69, 0x74, 0x2f, 0x72,
-	0x70, 0x63, 0x2f, 0x63, 0x6f, 0x6e, 0x74, 0x72, 0x6f, 0x6c, 0x70, 0x6c, 0x61, 0x6e, 0x65, 0x2f,
-	0x72, 0x65, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65, 0x73, 0x2f, 0x76, 0x31, 0x62, 0x06, 0x70, 0x72,
-	0x6f, 0x74, 0x6f, 0x33,
+	0x65, 0x78, 0x74, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x1a, 0x29, 0x63, 0x6f, 0x6e, 0x74, 0x72,
+	0x6f, 0x6c, 0x70, 0x6c, 0x61, 0x6e, 0x65, 0x2f, 0x72, 0x65, 0x73, 0x6f, 0x75, 0x72, 0x63, 0x65,
+	0x73, 0x2f, 0x76, 0x31, 0x2f, 0x6e, 0x61, 0x6d, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x2e, 0x70,
+	0x72, 0x6f, 0x74, 0x6f, 0x22, 0x7f, 0x0a, 0x07, 0x43, 0x6f, 0x6e, 0x74, 0x65, 0x78, 0x74, 0x12,
+	0x1e, 0x0a, 0x0a, 0x69, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x66, 0x69, 0x65, 0x72, 0x18, 0x01, 0x20,
+	0x01, 0x28, 0x09, 0x52, 0x0a, 0x69, 0x64, 0x65, 0x6e, 0x74, 0x69, 0x66, 0x69, 0x65, 0x72, 0x12,
+	0x12, 0x0a, 0x04, 0x6e, 0x61, 0x6d, 0x65, 0x18, 0x02, 0x20, 0x01, 0x28, 0x09, 0x52, 0x04, 0x6e,
+	0x61, 0x6d, 0x65, 0x12, 0x16, 0x0a, 0x06, 0x61, 0x63, 0x74, 0x69, 0x76, 0x65, 0x18, 0x03, 0x20,
+	0x01, 0x28, 0x08, 0x52, 0x06, 0x61, 0x63, 0x74, 0x69, 0x76, 0x65, 0x12, 0x28, 0x0a, 0x09, 0x6e,
+	0x61, 0x6d, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x18, 0x04, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x0a,
+	0x2e, 0x4e, 0x61, 0x6d, 0x65, 0x73, 0x70, 0x61, 0x63, 0x65, 0x52, 0x09, 0x6e, 0x61, 0x6d, 0x65,
+	0x73, 0x70, 0x61, 0x63, 0x65, 0x22, 0x17, 0x0a, 0x15, 0x43, 0x75, 0x72, 0x72, 0x65, 0x6e, 0x74,
+	0x43, 0x6f, 0x6e, 0x74, 0x65, 0x78, 0x74, 0x52, 0x65, 0x71, 0x75, 0x65, 0x73, 0x74, 0x22, 0x37,
+	0x0a, 0x11, 0x53, 0x65, 0x74, 0x43, 0x6f, 0x6e, 0x74, 0x65, 0x78, 0x74, 0x52, 0x65, 0x71, 0x75,
+	0x65, 0x73, 0x74, 0x12, 0x22, 0x0a, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x78, 0x74, 0x18, 0x01,
+	0x20, 0x01, 0x28, 0x0b, 0x32, 0x08, 0x2e, 0x43, 0x6f, 0x6e, 0x74, 0x65, 0x78, 0x74, 0x52, 0x07,
+	0x63, 0x6f, 0x6e, 0x74, 0x65, 0x78, 0x74, 0x22, 0x52, 0x0a, 0x12, 0x53, 0x65, 0x74, 0x43, 0x6f,
+	0x6e, 0x74, 0x65, 0x78, 0x74, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x22, 0x0a,
+	0x07, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x78, 0x74, 0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x08,
+	0x2e, 0x43, 0x6f, 0x6e, 0x74, 0x65, 0x78, 0x74, 0x52, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x78,
+	0x74, 0x12, 0x18, 0x0a, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x18, 0x02, 0x20, 0x01,
+	0x28, 0x08, 0x52, 0x07, 0x73, 0x75, 0x63, 0x63, 0x65, 0x73, 0x73, 0x22, 0x3c, 0x0a, 0x16, 0x43,
+	0x75, 0x72, 0x72, 0x65, 0x6e, 0x74, 0x43, 0x6f, 0x6e, 0x74, 0x65, 0x78, 0x74, 0x52, 0x65, 0x73,
+	0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12, 0x22, 0x0a, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x78, 0x74,
+	0x18, 0x01, 0x20, 0x01, 0x28, 0x0b, 0x32, 0x08, 0x2e, 0x43, 0x6f, 0x6e, 0x74, 0x65, 0x78, 0x74,
+	0x52, 0x07, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x78, 0x74, 0x42, 0x3a, 0x5a, 0x38, 0x67, 0x69, 0x74,
+	0x68, 0x75, 0x62, 0x2e, 0x63, 0x6f, 0x6d, 0x2f, 0x65, 0x64, 0x6f, 0x62, 0x74, 0x63, 0x2f, 0x63,
+	0x6c, 0x6f, 0x75, 0x64, 0x6b, 0x69, 0x74, 0x2f, 0x72, 0x70, 0x63, 0x2f, 0x63, 0x6f, 0x6e, 0x74,
+	0x72, 0x6f, 0x6c, 0x70, 0x6c, 0x61, 0x6e, 0x65, 0x2f, 0x72, 0x65, 0x73, 0x6f, 0x75, 0x72, 0x63,
+	0x65, 0x73, 0x2f, 0x76, 0x31, 0x62, 0x06, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x33,
 }
 
 var (
@@ -113,16 +327,25 @@ func file_controlplane_resources_v1_context_proto_rawDescGZIP() []byte {
 	return file_controlplane_resources_v1_context_proto_rawDescData
 }
 
-var file_controlplane_resources_v1_context_proto_msgTypes = make([]protoimpl.MessageInfo, 1)
+var file_controlplane_resources_v1_context_proto_msgTypes = make([]protoimpl.MessageInfo, 5)
 var file_controlplane_resources_v1_context_proto_goTypes = []interface{}{
-	(*Context)(nil), // 0: Context
+	(*Context)(nil),                // 0: Context
+	(*CurrentContextRequest)(nil),  // 1: CurrentContextRequest
+	(*SetContextRequest)(nil),      // 2: SetContextRequest
+	(*SetContextResponse)(nil),     // 3: SetContextResponse
+	(*CurrentContextResponse)(nil), // 4: CurrentContextResponse
+	(*Namespace)(nil),              // 5: Namespace
 }
 var file_controlplane_resources_v1_context_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	5, // 0: Context.namespace:type_name -> Namespace
+	0, // 1: SetContextRequest.context:type_name -> Context
+	0, // 2: SetContextResponse.context:type_name -> Context
+	0, // 3: CurrentContextResponse.context:type_name -> Context
+	4, // [4:4] is the sub-list for method output_type
+	4, // [4:4] is the sub-list for method input_type
+	4, // [4:4] is the sub-list for extension type_name
+	4, // [4:4] is the sub-list for extension extendee
+	0, // [0:4] is the sub-list for field type_name
 }
 
 func init() { file_controlplane_resources_v1_context_proto_init() }
@@ -130,9 +353,58 @@ func file_controlplane_resources_v1_context_proto_init() {
 	if File_controlplane_resources_v1_context_proto != nil {
 		return
 	}
+	file_controlplane_resources_v1_namespace_proto_init()
 	if !protoimpl.UnsafeEnabled {
 		file_controlplane_resources_v1_context_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Context); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_controlplane_resources_v1_context_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CurrentContextRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_controlplane_resources_v1_context_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SetContextRequest); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_controlplane_resources_v1_context_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*SetContextResponse); i {
+			case 0:
+				return &v.state
+			case 1:
+				return &v.sizeCache
+			case 2:
+				return &v.unknownFields
+			default:
+				return nil
+			}
+		}
+		file_controlplane_resources_v1_context_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+			switch v := v.(*CurrentContextResponse); i {
 			case 0:
 				return &v.state
 			case 1:
@@ -150,7 +422,7 @@ func file_controlplane_resources_v1_context_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: file_controlplane_resources_v1_context_proto_rawDesc,
 			NumEnums:      0,
-			NumMessages:   1,
+			NumMessages:   5,
 			NumExtensions: 0,
 			NumServices:   0,
 		},

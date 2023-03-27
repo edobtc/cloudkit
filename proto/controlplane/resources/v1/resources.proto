@@ -22,9 +22,25 @@ service Resources {
       get : "/v1/resources/list"
     };
   }
+  rpc Versions(ListVersionsRequest) returns (ListVersionsResponse) {
+    option (google.api.http) = {
+      get : "/v1/versions/list"
+    };
+  }
   rpc Status(StatusRequest) returns (StatusResponse) {
     option (google.api.http) = {
       get : "/v1/resources/status"
+    };
+  };
+  rpc CurrentContext(CurrentContextRequest) returns (CurrentContextResponse) {
+    option (google.api.http) = {
+      get : "/v1/resources/context/current"
+    };
+  };
+
+  rpc SetContext(SetContextRequest) returns (SetContextResponse) {
+    option (google.api.http) = {
+      post : "/v1/resources/context/current"
     };
   };
   rpc Liveness(LivenessRequest) returns (LivenessResponse);
@@ -72,7 +88,6 @@ message CreateRequest {
   repeated string tags = 6;
   repeated string hooks = 7; // simple string version of registrations
   optional Context context = 8;
-  optional Namespace ns = 9;
 }
 
 message CreateResponse { ResourceResponse status = 1; }
@@ -139,3 +154,25 @@ message Notification {
   string ip = 4;
   google.protobuf.Any meta = 5;
 }
+
+// ListResources
+message ListVersionsRequest {
+  string filter = 1;
+  repeated string tags = 2;
+}
+
+message ListVersionsResponse {
+  string filter = 1;
+  repeated Version version = 2;
+}
+
+message Version {
+  string identifier = 1;
+  string project = 2;
+  string version = 3;
+  bool active = 4;
+  repeated string tags = 5;
+  VersionMetadata metadata = 6;
+}
+
+message VersionMetadata { map<string, string> labels = 1; }

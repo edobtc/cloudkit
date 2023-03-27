@@ -16,6 +16,90 @@
     "application/json"
   ],
   "paths": {
+    "/v1/resources/context/current": {
+      "get": {
+        "operationId": "Resources_CurrentContext",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/CurrentContextResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "tags": [
+          "Resources"
+        ]
+      },
+      "post": {
+        "operationId": "Resources_SetContext",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/SetContextResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "context.identifier",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "context.name",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "context.active",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
+          },
+          {
+            "name": "context.namespace.identifier",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "context.namespace.owner",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "context.namespace.tags",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "tags": [
+          "Resources"
+        ]
+      }
+    },
     "/v1/resources/create": {
       "post": {
         "operationId": "Resources_Create",
@@ -117,6 +201,46 @@
           "Resources"
         ]
       }
+    },
+    "/v1/versions/list": {
+      "get": {
+        "operationId": "Resources_Versions",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ListVersionsResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "filter",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "required": false,
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "collectionFormat": "multi"
+          }
+        ],
+        "tags": [
+          "Resources"
+        ]
+      }
     }
   },
   "definitions": {
@@ -131,6 +255,17 @@
         },
         "active": {
           "type": "boolean"
+        },
+        "namespace": {
+          "$ref": "#/definitions/Namespace"
+        }
+      }
+    },
+    "CurrentContextResponse": {
+      "type": "object",
+      "properties": {
+        "context": {
+          "$ref": "#/definitions/Context"
         }
       }
     },
@@ -148,6 +283,17 @@
           "items": {
             "type": "string"
           }
+        }
+      }
+    },
+    "SetContextResponse": {
+      "type": "object",
+      "properties": {
+        "context": {
+          "$ref": "#/definitions/Context"
+        },
+        "success": {
+          "type": "boolean"
         }
       }
     },
@@ -224,9 +370,6 @@
         },
         "context": {
           "$ref": "#/definitions/Context"
-        },
-        "ns": {
-          "$ref": "#/definitions/Namespace"
         }
       },
       "title": "Resource Creation"
@@ -246,6 +389,20 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/v1ResourceResponse"
+          }
+        }
+      }
+    },
+    "v1ListVersionsResponse": {
+      "type": "object",
+      "properties": {
+        "filter": {
+          "type": "string"
+        },
+        "version": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Version"
           }
         }
       }
@@ -376,6 +533,43 @@
       ],
       "default": "TARGET_AWS_UNSPECIFIED",
       "title": "- TARGET_MOCK_BLANK: Mock/Test helper providers"
+    },
+    "v1Version": {
+      "type": "object",
+      "properties": {
+        "identifier": {
+          "type": "string"
+        },
+        "project": {
+          "type": "string"
+        },
+        "version": {
+          "type": "string"
+        },
+        "active": {
+          "type": "boolean"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "metadata": {
+          "$ref": "#/definitions/v1VersionMetadata"
+        }
+      }
+    },
+    "v1VersionMetadata": {
+      "type": "object",
+      "properties": {
+        "labels": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
     }
   }
 }

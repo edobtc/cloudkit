@@ -20,7 +20,10 @@ const _ = grpc.SupportPackageIsVersion7
 type ResourcesClient interface {
 	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
 	List(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListResponse, error)
+	Versions(ctx context.Context, in *ListVersionsRequest, opts ...grpc.CallOption) (*ListVersionsResponse, error)
 	Status(ctx context.Context, in *StatusRequest, opts ...grpc.CallOption) (*StatusResponse, error)
+	CurrentContext(ctx context.Context, in *CurrentContextRequest, opts ...grpc.CallOption) (*CurrentContextResponse, error)
+	SetContext(ctx context.Context, in *SetContextRequest, opts ...grpc.CallOption) (*SetContextResponse, error)
 	Liveness(ctx context.Context, in *LivenessRequest, opts ...grpc.CallOption) (*LivenessResponse, error)
 	ProvisionCallback(ctx context.Context, in *ProvisionCallbackRequest, opts ...grpc.CallOption) (*ProvisionCallbackResponse, error)
 }
@@ -51,9 +54,36 @@ func (c *resourcesClient) List(ctx context.Context, in *ListRequest, opts ...grp
 	return out, nil
 }
 
+func (c *resourcesClient) Versions(ctx context.Context, in *ListVersionsRequest, opts ...grpc.CallOption) (*ListVersionsResponse, error) {
+	out := new(ListVersionsResponse)
+	err := c.cc.Invoke(ctx, "/controlplane.resources.v1.Resources/Versions", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *resourcesClient) Status(ctx context.Context, in *StatusRequest, opts ...grpc.CallOption) (*StatusResponse, error) {
 	out := new(StatusResponse)
 	err := c.cc.Invoke(ctx, "/controlplane.resources.v1.Resources/Status", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *resourcesClient) CurrentContext(ctx context.Context, in *CurrentContextRequest, opts ...grpc.CallOption) (*CurrentContextResponse, error) {
+	out := new(CurrentContextResponse)
+	err := c.cc.Invoke(ctx, "/controlplane.resources.v1.Resources/CurrentContext", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+func (c *resourcesClient) SetContext(ctx context.Context, in *SetContextRequest, opts ...grpc.CallOption) (*SetContextResponse, error) {
+	out := new(SetContextResponse)
+	err := c.cc.Invoke(ctx, "/controlplane.resources.v1.Resources/SetContext", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -84,7 +114,10 @@ func (c *resourcesClient) ProvisionCallback(ctx context.Context, in *ProvisionCa
 type ResourcesServer interface {
 	Create(context.Context, *CreateRequest) (*CreateResponse, error)
 	List(context.Context, *ListRequest) (*ListResponse, error)
+	Versions(context.Context, *ListVersionsRequest) (*ListVersionsResponse, error)
 	Status(context.Context, *StatusRequest) (*StatusResponse, error)
+	CurrentContext(context.Context, *CurrentContextRequest) (*CurrentContextResponse, error)
+	SetContext(context.Context, *SetContextRequest) (*SetContextResponse, error)
 	Liveness(context.Context, *LivenessRequest) (*LivenessResponse, error)
 	ProvisionCallback(context.Context, *ProvisionCallbackRequest) (*ProvisionCallbackResponse, error)
 	mustEmbedUnimplementedResourcesServer()
@@ -100,8 +133,17 @@ func (UnimplementedResourcesServer) Create(context.Context, *CreateRequest) (*Cr
 func (UnimplementedResourcesServer) List(context.Context, *ListRequest) (*ListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method List not implemented")
 }
+func (UnimplementedResourcesServer) Versions(context.Context, *ListVersionsRequest) (*ListVersionsResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Versions not implemented")
+}
 func (UnimplementedResourcesServer) Status(context.Context, *StatusRequest) (*StatusResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Status not implemented")
+}
+func (UnimplementedResourcesServer) CurrentContext(context.Context, *CurrentContextRequest) (*CurrentContextResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CurrentContext not implemented")
+}
+func (UnimplementedResourcesServer) SetContext(context.Context, *SetContextRequest) (*SetContextResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method SetContext not implemented")
 }
 func (UnimplementedResourcesServer) Liveness(context.Context, *LivenessRequest) (*LivenessResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Liveness not implemented")
@@ -158,6 +200,24 @@ func _Resources_List_Handler(srv interface{}, ctx context.Context, dec func(inte
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Resources_Versions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(ListVersionsRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ResourcesServer).Versions(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/controlplane.resources.v1.Resources/Versions",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ResourcesServer).Versions(ctx, req.(*ListVersionsRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Resources_Status_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(StatusRequest)
 	if err := dec(in); err != nil {
@@ -172,6 +232,42 @@ func _Resources_Status_Handler(srv interface{}, ctx context.Context, dec func(in
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(ResourcesServer).Status(ctx, req.(*StatusRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Resources_CurrentContext_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CurrentContextRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ResourcesServer).CurrentContext(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/controlplane.resources.v1.Resources/CurrentContext",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ResourcesServer).CurrentContext(ctx, req.(*CurrentContextRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Resources_SetContext_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SetContextRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ResourcesServer).SetContext(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/controlplane.resources.v1.Resources/SetContext",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ResourcesServer).SetContext(ctx, req.(*SetContextRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -228,8 +324,20 @@ var Resources_ServiceDesc = grpc.ServiceDesc{
 			Handler:    _Resources_List_Handler,
 		},
 		{
+			MethodName: "Versions",
+			Handler:    _Resources_Versions_Handler,
+		},
+		{
 			MethodName: "Status",
 			Handler:    _Resources_Status_Handler,
+		},
+		{
+			MethodName: "CurrentContext",
+			Handler:    _Resources_CurrentContext_Handler,
+		},
+		{
+			MethodName: "SetContext",
+			Handler:    _Resources_SetContext_Handler,
 		},
 		{
 			MethodName: "Liveness",
