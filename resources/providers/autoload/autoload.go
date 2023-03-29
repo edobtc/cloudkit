@@ -5,6 +5,7 @@ import (
 
 	"github.com/edobtc/cloudkit/resources/providers"
 	"github.com/edobtc/cloudkit/resources/providers/aws/ec2"
+	"github.com/edobtc/cloudkit/resources/providers/aws/ecs/fargate"
 	"github.com/edobtc/cloudkit/resources/providers/aws/lambda"
 	"github.com/edobtc/cloudkit/resources/providers/cloudflare"
 	"github.com/edobtc/cloudkit/resources/providers/digitalocean/droplet"
@@ -44,6 +45,8 @@ var (
 		"docker":               docker.NewProvider,
 		"aws/lambda":           lambda.NewProvider,
 		"aws/ec2":              ec2.NewProvisioner,
+		"aws/fargate":          fargate.NewProvisioner,
+		"aws/ecs":              fargate.NewProvisioner,
 
 		// mock/test providers for testing integrations
 		// when running locally and wanting to make full requests
