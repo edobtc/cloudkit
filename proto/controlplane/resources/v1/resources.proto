@@ -65,6 +65,8 @@ enum Target {
   // Mock/Test helper providers
   TARGET_MOCK_BLANK = 12;
   TARGET_MOCK_TIMED = 13;
+
+  TARGET_AWS_ECS = 14;
 }
 
 message Registration {

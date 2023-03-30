@@ -30,6 +30,7 @@ var (
 		pb.Target_TARGET_AWS_EC2:              "aws/ec2",
 		pb.Target_TARGET_AWS_LAMBDA:           "aws/lambda",
 		pb.Target_TARGET_AWS_FARGATE:          "aws/fargate",
+		pb.Target_TARGET_AWS_ECS:              "aws/fargate",
 		pb.Target_TARGET_LINODE:               "linode",
 		pb.Target_TARGET_KUBERNETES:           "k8s/deployment",
 		pb.Target_TARGET_K8S:                  "k8s/deployment",

@@ -529,7 +529,8 @@
         "TARGET_K8S",
         "TARGET_DOCKER",
         "TARGET_MOCK_BLANK",
-        "TARGET_MOCK_TIMED"
+        "TARGET_MOCK_TIMED",
+        "TARGET_AWS_ECS"
       ],
       "default": "TARGET_AWS_UNSPECIFIED",
       "title": "- TARGET_MOCK_BLANK: Mock/Test helper providers"
