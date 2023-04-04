@@ -8,8 +8,6 @@ import (
 
 // TODO:
 // NOT IMPLEMENTED
-//
-
 // Bandit s a standard Bandit test ie: a/b, a/b w/ control, a/b/c
 type Bandit struct {
 	plan *plan.Definition

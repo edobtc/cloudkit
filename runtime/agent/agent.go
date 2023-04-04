@@ -80,7 +80,7 @@ func NewAgent(prov providers.Provider) *Agent {
 	}
 }
 
-// Parse takes an plan and constructs a workflow
+// Parse takes a plan and constructs a workflow
 // of agents as a sequence to be executed
 func Parse(p plan.Definition) ([]*Agent, error) {
 	workflow := []*Agent{}

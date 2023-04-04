@@ -8,8 +8,6 @@ import (
 
 // TODO:
 // NOT IMPLEMENTED
-//
-
 // Adaptive s a standard Adaptive test ie: a/b, a/b w/ control, a/b/c
 type Adaptive struct {
 	plan *plan.Definition

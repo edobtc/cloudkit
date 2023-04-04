@@ -7,7 +7,7 @@ import (
 )
 
 // Dispatcher handles the processing of submitted
-// experiment executor agents
+// executor agents
 type Dispatcher struct {
 	sync  *sync.Mutex
 	Log   chan []byte

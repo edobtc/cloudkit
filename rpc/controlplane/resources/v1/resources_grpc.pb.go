@@ -19,8 +19,9 @@ const _ = grpc.SupportPackageIsVersion7
 // For semantics around ctx use and closing/ending streaming RPCs, please refer to https://pkg.go.dev/google.golang.org/grpc/?tab=doc#ClientConn.NewStream.
 type ResourcesClient interface {
 	Create(ctx context.Context, in *CreateRequest, opts ...grpc.CallOption) (*CreateResponse, error)
+	Submit(ctx context.Context, in *SubmitRequest, opts ...grpc.CallOption) (*SubmitResponse, error)
 	List(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListResponse, error)
-	Versions(ctx context.Context, in *ListVersionsRequest, opts ...grpc.CallOption) (*ListVersionsResponse, error)
+	Versions(ctx context.Context, in *VersionsRequest, opts ...grpc.CallOption) (*VersionsResponse, error)
 	Status(ctx context.Context, in *StatusRequest, opts ...grpc.CallOption) (*StatusResponse, error)
 	CurrentContext(ctx context.Context, in *CurrentContextRequest, opts ...grpc.CallOption) (*CurrentContextResponse, error)
 	SetContext(ctx context.Context, in *SetContextRequest, opts ...grpc.CallOption) (*SetContextResponse, error)
@@ -45,6 +46,15 @@ func (c *resourcesClient) Create(ctx context.Context, in *CreateRequest, opts ..
 	return out, nil
 }
 
+func (c *resourcesClient) Submit(ctx context.Context, in *SubmitRequest, opts ...grpc.CallOption) (*SubmitResponse, error) {
+	out := new(SubmitResponse)
+	err := c.cc.Invoke(ctx, "/controlplane.resources.v1.Resources/Submit", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 func (c *resourcesClient) List(ctx context.Context, in *ListRequest, opts ...grpc.CallOption) (*ListResponse, error) {
 	out := new(ListResponse)
 	err := c.cc.Invoke(ctx, "/controlplane.resources.v1.Resources/List", in, out, opts...)
@@ -54,8 +64,8 @@ func (c *resourcesClient) List(ctx context.Context, in *ListRequest, opts ...grp
 	return out, nil
 }
 
-func (c *resourcesClient) Versions(ctx context.Context, in *ListVersionsRequest, opts ...grpc.CallOption) (*ListVersionsResponse, error) {
-	out := new(ListVersionsResponse)
+func (c *resourcesClient) Versions(ctx context.Context, in *VersionsRequest, opts ...grpc.CallOption) (*VersionsResponse, error) {
+	out := new(VersionsResponse)
 	err := c.cc.Invoke(ctx, "/controlplane.resources.v1.Resources/Versions", in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -113,8 +123,9 @@ func (c *resourcesClient) ProvisionCallback(ctx context.Context, in *ProvisionCa
 // for forward compatibility
 type ResourcesServer interface {
 	Create(context.Context, *CreateRequest) (*CreateResponse, error)
+	Submit(context.Context, *SubmitRequest) (*SubmitResponse, error)
 	List(context.Context, *ListRequest) (*ListResponse, error)
-	Versions(context.Context, *ListVersionsRequest) (*ListVersionsResponse, error)
+	Versions(context.Context, *VersionsRequest) (*VersionsResponse, error)
 	Status(context.Context, *StatusRequest) (*StatusResponse, error)
 	CurrentContext(context.Context, *CurrentContextRequest) (*CurrentContextResponse, error)
 	SetContext(context.Context, *SetContextRequest) (*SetContextResponse, error)
@@ -130,10 +141,13 @@ type UnimplementedResourcesServer struct {
 func (UnimplementedResourcesServer) Create(context.Context, *CreateRequest) (*CreateResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Create not implemented")
 }
+func (UnimplementedResourcesServer) Submit(context.Context, *SubmitRequest) (*SubmitResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method Submit not implemented")
+}
 func (UnimplementedResourcesServer) List(context.Context, *ListRequest) (*ListResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method List not implemented")
 }
-func (UnimplementedResourcesServer) Versions(context.Context, *ListVersionsRequest) (*ListVersionsResponse, error) {
+func (UnimplementedResourcesServer) Versions(context.Context, *VersionsRequest) (*VersionsResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method Versions not implemented")
 }
 func (UnimplementedResourcesServer) Status(context.Context, *StatusRequest) (*StatusResponse, error) {
@@ -182,6 +196,24 @@ func _Resources_Create_Handler(srv interface{}, ctx context.Context, dec func(in
 	return interceptor(ctx, in, info, handler)
 }
 
+func _Resources_Submit_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(SubmitRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(ResourcesServer).Submit(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/controlplane.resources.v1.Resources/Submit",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(ResourcesServer).Submit(ctx, req.(*SubmitRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 func _Resources_List_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
 	in := new(ListRequest)
 	if err := dec(in); err != nil {
@@ -201,7 +233,7 @@ func _Resources_List_Handler(srv interface{}, ctx context.Context, dec func(inte
 }
 
 func _Resources_Versions_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(ListVersionsRequest)
+	in := new(VersionsRequest)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -213,7 +245,7 @@ func _Resources_Versions_Handler(srv interface{}, ctx context.Context, dec func(
 		FullMethod: "/controlplane.resources.v1.Resources/Versions",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(ResourcesServer).Versions(ctx, req.(*ListVersionsRequest))
+		return srv.(ResourcesServer).Versions(ctx, req.(*VersionsRequest))
 	}
 	return interceptor(ctx, in, info, handler)
 }
@@ -318,6 +350,10 @@ var Resources_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "Create",
 			Handler:    _Resources_Create_Handler,
+		},
+		{
+			MethodName: "Submit",
+			Handler:    _Resources_Submit_Handler,
 		},
 		{
 			MethodName: "List",

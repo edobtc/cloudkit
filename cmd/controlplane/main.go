@@ -29,6 +29,7 @@ import (
 	"github.com/edobtc/cloudkit/http/middleware/namespace"
 
 	"github.com/edobtc/cloudkit/logging"
+	cloudkitRuntime "github.com/edobtc/cloudkit/runtime"
 	"github.com/edobtc/cloudkit/server"
 )
 
@@ -114,6 +115,13 @@ func serveGRPC() chan bool {
 	if err != nil {
 		panic("failed to listen")
 	}
+
+	r := cloudkitRuntime.New(context.TODO())
+
+	go func(rt *cloudkitRuntime.Runtime) {
+		log.Debug("starting runtime")
+		r.Run()
+	}(r)
 
 	srv := service.NewResourcesServiceServer()
 

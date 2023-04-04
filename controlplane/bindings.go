@@ -8,7 +8,7 @@ import (
 )
 
 var (
-	prefix = "/control"
+	prefix = "/cp"
 )
 
 func BindRoutes(r *mux.Router) {

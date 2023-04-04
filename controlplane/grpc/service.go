@@ -7,14 +7,16 @@ import (
 	"os"
 
 	pb "github.com/edobtc/cloudkit/rpc/controlplane/resources/v1"
+	"github.com/edobtc/cloudkit/runtime"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
 )
 
 type ResourcesServiceServer struct {
-	Close chan os.Signal
-	Error chan error
+	Close   chan os.Signal
+	Error   chan error
+	runtime *runtime.Runtime
 
 	pb.UnimplementedResourcesServer
 }

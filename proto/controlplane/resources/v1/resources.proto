@@ -17,12 +17,18 @@ service Resources {
       body : "*"
     };
   };
+  rpc Submit(SubmitRequest) returns (SubmitResponse) {
+    option (google.api.http) = {
+      post : "/v1/resources/create/async"
+      body : "*"
+    };
+  };
   rpc List(ListRequest) returns (ListResponse) {
     option (google.api.http) = {
       get : "/v1/resources/list"
     };
   }
-  rpc Versions(ListVersionsRequest) returns (ListVersionsResponse) {
+  rpc Versions(VersionsRequest) returns (VersionsResponse) {
     option (google.api.http) = {
       get : "/v1/versions/list"
     };
@@ -92,6 +98,11 @@ message CreateRequest {
   optional Context context = 8;
 }
 
+// Resource Creation
+message SubmitRequest { CreateRequest data = 1; }
+
+message SubmitResponse { CreateResponse data = 1; }
+
 message CreateResponse { ResourceResponse status = 1; }
 
 message ResourceConfiguration {
@@ -157,13 +168,13 @@ message Notification {
   google.protobuf.Any meta = 5;
 }
 
-// ListResources
-message ListVersionsRequest {
+// ListVersions
+message VersionsRequest {
   string filter = 1;
   repeated string tags = 2;
 }
 
-message ListVersionsResponse {
+message VersionsResponse {
   string filter = 1;
   repeated Version version = 2;
 }

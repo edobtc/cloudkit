@@ -132,6 +132,38 @@
         ]
       }
     },
+    "/v1/resources/create/async": {
+      "post": {
+        "operationId": "Resources_Submit",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1SubmitResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1SubmitRequest"
+            }
+          }
+        ],
+        "tags": [
+          "Resources"
+        ]
+      }
+    },
     "/v1/resources/list": {
       "get": {
         "operationId": "Resources_List",
@@ -209,7 +241,7 @@
           "200": {
             "description": "A successful response.",
             "schema": {
-              "$ref": "#/definitions/v1ListVersionsResponse"
+              "$ref": "#/definitions/v1VersionsResponse"
             }
           },
           "default": {
@@ -393,20 +425,6 @@
         }
       }
     },
-    "v1ListVersionsResponse": {
-      "type": "object",
-      "properties": {
-        "filter": {
-          "type": "string"
-        },
-        "version": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/v1Version"
-          }
-        }
-      }
-    },
     "v1LivenessResponse": {
       "type": "object",
       "properties": {
@@ -513,6 +531,23 @@
         }
       }
     },
+    "v1SubmitRequest": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/v1CreateRequest"
+        }
+      },
+      "title": "Resource Creation"
+    },
+    "v1SubmitResponse": {
+      "type": "object",
+      "properties": {
+        "data": {
+          "$ref": "#/definitions/v1CreateResponse"
+        }
+      }
+    },
     "v1Target": {
       "type": "string",
       "enum": [
@@ -568,6 +603,20 @@
           "type": "object",
           "additionalProperties": {
             "type": "string"
+          }
+        }
+      }
+    },
+    "v1VersionsResponse": {
+      "type": "object",
+      "properties": {
+        "filter": {
+          "type": "string"
+        },
+        "version": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Version"
           }
         }
       }
