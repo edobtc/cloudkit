@@ -25,7 +25,7 @@ type ClientOptions struct {
 	Host         string
 }
 
-func NewClient(opt ClientOptions) (*lnrpc.LightningClient, error) {
+func NewClient(opt ClientOptions) (lnrpc.LightningClient, error) {
 	conn, err := GRPCTransport(opt)
 	if err != nil {
 		return nil, err
@@ -33,17 +33,17 @@ func NewClient(opt ClientOptions) (*lnrpc.LightningClient, error) {
 
 	client := lnrpc.NewLightningClient(conn)
 
-	return &client, nil
+	return client, nil
 }
 
-func NewRouterClient(opt ClientOptions) (*routerrpc.RouterClient, error) {
+func NewRouterClient(opt ClientOptions) (routerrpc.RouterClient, error) {
 	conn, err := GRPCTransport(opt)
 	if err != nil {
 		return nil, err
 	}
 
 	routerClient := routerrpc.NewRouterClient(conn)
-	return &routerClient, nil
+	return routerClient, nil
 }
 
 func decodeMacaroonHex(mHex string) ([]byte, error) {
