@@ -9,42 +9,57 @@ import (
 	"github.com/aws/aws-sdk-go/service/ec2"
 )
 
-func CreateSecurityGroups() error {
+type Config struct {
+	VpcId  string
+	DryRun bool
+}
+
+type SecurityGroupBuilder struct {
+	cfg Config
+	svc *ec2.EC2
+}
+
+func NewSecurityGroupBuilder(cfg Config) (*SecurityGroupBuilder, error) {
 	sess, err := auth.Session()
 	if err != nil {
-		return err
+		return nil, err
 	}
 
-	svc := ec2.New(sess)
+	return &SecurityGroupBuilder{
+		cfg: cfg,
+		svc: ec2.New(sess),
+	}, nil
+}
 
-	subscriberSecurityGroupId, err := createSubscriberSecurityGroup(svc)
+func (b *SecurityGroupBuilder) CreateSecurityGroups() error {
+	subscriberSecurityGroupId, err := b.CreateSubscriberSecurityGroup()
 	if err != nil {
 		return err
 	}
 	log.Debug("Created security group for zmq_subscriber resources:", subscriberSecurityGroupId)
 
-	selfSecurityGroupInput := createSelfSecurityGroupInput(subscriberSecurityGroupId)
-	authorizeSelfSecurityGroupIngress(svc, selfSecurityGroupInput)
+	selfSecurityGroupInput := b.ListenerSelfSecurityGroupInput(subscriberSecurityGroupId)
+	b.AuthorizeSecurityGroupIngress(selfSecurityGroupInput)
 	log.Debug("Authorized ingress from the same security group for security group:", subscriberSecurityGroupId)
 
-	sshSecurityGroupId := createSshSecurityGroup(svc)
+	sshSecurityGroupId := b.CreateSshSecurityGroup()
 	log.Debug("Created security group for SSH access:", sshSecurityGroupId)
 
-	sshSecurityGroupInput := createSshSecurityGroupInput(sshSecurityGroupId)
-	authorizeSshSecurityGroupIngress(svc, sshSecurityGroupInput)
+	sshSecurityGroupInput := b.CreateSshSecurityGroupInput(sshSecurityGroupId)
+	b.AuthorizeSecurityGroupIngress(sshSecurityGroupInput)
 	log.Debug("Authorized ingress for SSH access for security group:", sshSecurityGroupId)
 
-	bitcoinP2PSecurityGroupId, err := createBitcoinP2PSecurityGroup(svc)
+	bitcoinP2PSecurityGroupId, err := b.CreateBitcoinP2PSecurityGroup()
 	if err != nil {
 		return err
 	}
 	log.Debug("Created security group for bitcoin_p2p resources:", bitcoinP2PSecurityGroupId)
 
-	bitcoinP2PSecurityGroupInput := createBitcoinP2PSecurityGroupInput(bitcoinP2PSecurityGroupId)
-	authorizeBitcoinP2PSecurityGroupIngress(svc, bitcoinP2PSecurityGroupInput)
+	bitcoinP2PSecurityGroupInput := b.CreateBitcoinP2PSecurityGroupInput(bitcoinP2PSecurityGroupId)
+	b.AuthorizeSecurityGroupIngress(bitcoinP2PSecurityGroupInput)
 	log.Debug("Authorized ingress for bitcoin_p2p access for security group:", bitcoinP2PSecurityGroupId)
 
-	zmqBroadcasterSecurityGroupId, err := createZmqBroadcasterSecurityGroup(svc)
+	zmqBroadcasterSecurityGroupId, err := b.CreateZmqBroadcasterSecurityGroup()
 	if err != nil {
 		return err
 	}
@@ -53,7 +68,7 @@ func CreateSecurityGroups() error {
 	return nil
 }
 
-func createSubscriberSecurityGroup(svc *ec2.EC2) (string, error) {
+func (b *SecurityGroupBuilder) CreateSubscriberSecurityGroup() (string, error) {
 	subscriberSecurityGroupName := "zmq_subscriber_sg"
 	subscriberSecurityGroupDescription := "Security group for zmq_subscriber resources"
 
@@ -73,7 +88,7 @@ func createSubscriberSecurityGroup(svc *ec2.EC2) (string, error) {
 		},
 	}
 
-	createSubscriberSecurityGroupOutput, err := svc.CreateSecurityGroup(createSubscriberSecurityGroupInput)
+	createSubscriberSecurityGroupOutput, err := b.svc.CreateSecurityGroup(createSubscriberSecurityGroupInput)
 	if err != nil {
 		log.Debug("Error creating security group for zmq_subscriber resources:", err)
 		return "", err
@@ -82,7 +97,7 @@ func createSubscriberSecurityGroup(svc *ec2.EC2) (string, error) {
 	return *createSubscriberSecurityGroupOutput.GroupId, nil
 }
 
-func createSshSecurityGroupInput(sshSecurityGroupId string) *ec2.AuthorizeSecurityGroupIngressInput {
+func (b *SecurityGroupBuilder) CreateSshSecurityGroupInput(sshSecurityGroupId string) *ec2.AuthorizeSecurityGroupIngressInput {
 	return &ec2.AuthorizeSecurityGroupIngressInput{
 		GroupId: aws.String(sshSecurityGroupId),
 		IpPermissions: []*ec2.IpPermission{
@@ -100,7 +115,7 @@ func createSshSecurityGroupInput(sshSecurityGroupId string) *ec2.AuthorizeSecuri
 	}
 }
 
-func createBitcoinP2PSecurityGroup(svc *ec2.EC2) (string, error) {
+func (b *SecurityGroupBuilder) CreateBitcoinP2PSecurityGroup() (string, error) {
 	bitcoinP2PSecurityGroupName := "bitcoin_p2p_sg"
 	bitcoinP2PSecurityGroupDescription := "Security group for bitcoin_p2p resources"
 
@@ -109,7 +124,7 @@ func createBitcoinP2PSecurityGroup(svc *ec2.EC2) (string, error) {
 		Description: aws.String(bitcoinP2PSecurityGroupDescription),
 	}
 
-	createBitcoinP2PSecurityGroupOutput, err := svc.CreateSecurityGroup(createBitcoinP2PSecurityGroupInput)
+	createBitcoinP2PSecurityGroupOutput, err := b.svc.CreateSecurityGroup(createBitcoinP2PSecurityGroupInput)
 	if err != nil {
 		log.Debug("Error creating security group for bitcoin_p2p resources:", err)
 		return "", err
@@ -118,7 +133,7 @@ func createBitcoinP2PSecurityGroup(svc *ec2.EC2) (string, error) {
 	return *createBitcoinP2PSecurityGroupOutput.GroupId, nil
 }
 
-func createBitcoinP2PSecurityGroupInput(bitcoinP2PSecurityGroupId string) *ec2.AuthorizeSecurityGroupIngressInput {
+func (b *SecurityGroupBuilder) CreateBitcoinP2PSecurityGroupInput(bitcoinP2PSecurityGroupId string) *ec2.AuthorizeSecurityGroupIngressInput {
 	return &ec2.AuthorizeSecurityGroupIngressInput{
 		GroupId: aws.String(bitcoinP2PSecurityGroupId),
 		IpPermissions: []*ec2.IpPermission{
@@ -136,25 +151,15 @@ func createBitcoinP2PSecurityGroupInput(bitcoinP2PSecurityGroupId string) *ec2.A
 	}
 }
 
-func authorizeBitcoinP2PSecurityGroupIngress(svc *ec2.EC2, input *ec2.AuthorizeSecurityGroupIngressInput) error {
-	_, err := svc.AuthorizeSecurityGroupIngress(input)
+func (b *SecurityGroupBuilder) AuthorizeSecurityGroupIngress(input *ec2.AuthorizeSecurityGroupIngressInput) error {
+	_, err := b.svc.AuthorizeSecurityGroupIngress(input)
 	if err != nil {
-		log.Debug("Error authorizing ingress for SSH access:", err)
 		return err
 	}
 	return nil
 }
 
-func authorizeSshSecurityGroupIngress(svc *ec2.EC2, input *ec2.AuthorizeSecurityGroupIngressInput) error {
-	_, err := svc.AuthorizeSecurityGroupIngress(input)
-	if err != nil {
-		log.Debug("Error authorizing ingress for SSH access:", err)
-		return err
-	}
-	return nil
-}
-
-func createSelfSecurityGroupInput(subscriberSecurityGroupId string) *ec2.AuthorizeSecurityGroupIngressInput {
+func (b *SecurityGroupBuilder) ListenerSelfSecurityGroupInput(subscriberSecurityGroupId string) *ec2.AuthorizeSecurityGroupIngressInput {
 	return &ec2.AuthorizeSecurityGroupIngressInput{
 		GroupId: aws.String(subscriberSecurityGroupId),
 		IpPermissions: []*ec2.IpPermission{
@@ -181,17 +186,7 @@ func createSelfSecurityGroupInput(subscriberSecurityGroupId string) *ec2.Authori
 	}
 }
 
-func authorizeSelfSecurityGroupIngress(svc *ec2.EC2, input *ec2.AuthorizeSecurityGroupIngressInput) error {
-	_, err := svc.AuthorizeSecurityGroupIngress(input)
-	if err != nil {
-		log.Debug("Error authorizing ingress from the same security group:", err)
-		return err
-	}
-
-	return nil
-}
-
-func createSshSecurityGroup(svc *ec2.EC2) string {
+func (b *SecurityGroupBuilder) CreateSshSecurityGroup() string {
 	sshSecurityGroupName := "ssh_sg"
 	sshSecurityGroupDescription := "Security group for SSH access"
 
@@ -211,7 +206,7 @@ func createSshSecurityGroup(svc *ec2.EC2) string {
 		},
 	}
 
-	createSshSecurityGroupOutput, err := svc.CreateSecurityGroup(createSshSecurityGroupInput)
+	createSshSecurityGroupOutput, err := b.svc.CreateSecurityGroup(createSshSecurityGroupInput)
 	if err != nil {
 		log.Debug("Error creating security group for SSH access:", err)
 		return ""
@@ -220,16 +215,17 @@ func createSshSecurityGroup(svc *ec2.EC2) string {
 	return *createSshSecurityGroupOutput.GroupId
 }
 
-func createZmqBroadcasterSecurityGroup(svc *ec2.EC2) (string, error) {
+func (b *SecurityGroupBuilder) CreateZmqBroadcasterSecurityGroup() (string, error) {
 	zmqBroadcasterSecurityGroupName := "zmq_broadcaster_sg"
 	zmqBroadcasterSecurityGroupDescription := "Security group for zmq_broadcaster resources"
 
 	createZmqBroadcasterSecurityGroupInput := &ec2.CreateSecurityGroupInput{
 		GroupName:   aws.String(zmqBroadcasterSecurityGroupName),
 		Description: aws.String(zmqBroadcasterSecurityGroupDescription),
+		VpcId:       aws.String(b.cfg.VpcId),
 	}
 
-	createZmqBroadcasterSecurityGroupOutput, err := svc.CreateSecurityGroup(createZmqBroadcasterSecurityGroupInput)
+	createZmqBroadcasterSecurityGroupOutput, err := b.svc.CreateSecurityGroup(createZmqBroadcasterSecurityGroupInput)
 	if err != nil {
 		log.Debug("Error creating security group for zmq_broadcaster resources:", err)
 		return "", err
