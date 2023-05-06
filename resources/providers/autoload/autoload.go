@@ -7,6 +7,7 @@ import (
 	"github.com/edobtc/cloudkit/resources/providers/aws/ec2"
 	"github.com/edobtc/cloudkit/resources/providers/aws/ecs/fargate"
 	"github.com/edobtc/cloudkit/resources/providers/aws/lambda"
+	"github.com/edobtc/cloudkit/resources/providers/aws/route53"
 	"github.com/edobtc/cloudkit/resources/providers/cloudflare"
 	"github.com/edobtc/cloudkit/resources/providers/digitalocean/droplet"
 	"github.com/edobtc/cloudkit/resources/providers/docker"
@@ -31,6 +32,7 @@ var (
 		pb.Target_TARGET_AWS_LAMBDA:           "aws/lambda",
 		pb.Target_TARGET_AWS_FARGATE:          "aws/fargate",
 		pb.Target_TARGET_AWS_ECS:              "aws/fargate",
+		pb.Target_TARGET_AWS_ROUTE53:          "aws/route53",
 		pb.Target_TARGET_LINODE:               "linode",
 		pb.Target_TARGET_KUBERNETES:           "k8s/deployment",
 		pb.Target_TARGET_K8S:                  "k8s/deployment",
@@ -44,6 +46,7 @@ var (
 		"cloudflare":           cloudflare.NewProvider,
 		"digitalocean/droplet": droplet.NewProvider,
 		"docker":               docker.NewProvider,
+		"aws/route53":          route53.NewProvider,
 		"aws/lambda":           lambda.NewProvider,
 		"aws/ec2":              ec2.NewProvisioner,
 		"aws/fargate":          fargate.NewProvisioner,

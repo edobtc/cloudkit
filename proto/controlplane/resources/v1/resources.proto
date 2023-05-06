@@ -73,6 +73,7 @@ enum Target {
   TARGET_MOCK_TIMED = 13;
 
   TARGET_AWS_ECS = 14;
+  TARGET_AWS_ROUTE53 = 15;
 }
 
 message Registration {
