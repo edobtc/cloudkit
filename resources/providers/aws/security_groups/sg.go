@@ -1,4 +1,4 @@
-package main
+package security_groups
 
 import (
 	"github.com/edobtc/cloudkit/resources/providers/aws/auth"
