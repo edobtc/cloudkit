@@ -39,6 +39,7 @@ func TestProtoTargetMap(t *testing.T) {
 		{input: pb.Target_TARGET_DOCKER, expected: "docker"},
 		{input: pb.Target_TARGET_MOCK_BLANK, expected: "test/blank"},
 		{input: pb.Target_TARGET_MOCK_TIMED, expected: "test/timed"},
+		{input: pb.Target_TARGET_AWS_SECURITY_GROUPS, expected: "aws/sg"},
 	}
 
 	for _, tc := range tests {

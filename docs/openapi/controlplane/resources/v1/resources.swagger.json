@@ -566,7 +566,8 @@
         "TARGET_MOCK_BLANK",
         "TARGET_MOCK_TIMED",
         "TARGET_AWS_ECS",
-        "TARGET_AWS_ROUTE53"
+        "TARGET_AWS_ROUTE53",
+        "TARGET_AWS_SECURITY_GROUPS"
       ],
       "default": "TARGET_AWS_UNSPECIFIED",
       "title": "- TARGET_MOCK_BLANK: Mock/Test helper providers"

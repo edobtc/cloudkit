@@ -8,6 +8,7 @@ import (
 	"github.com/edobtc/cloudkit/resources/providers/aws/ecs/fargate"
 	"github.com/edobtc/cloudkit/resources/providers/aws/lambda"
 	"github.com/edobtc/cloudkit/resources/providers/aws/route53"
+	"github.com/edobtc/cloudkit/resources/providers/aws/security_groups"
 	"github.com/edobtc/cloudkit/resources/providers/cloudflare"
 	"github.com/edobtc/cloudkit/resources/providers/digitalocean/droplet"
 	"github.com/edobtc/cloudkit/resources/providers/docker"
@@ -23,20 +24,21 @@ type autoloadRegistration func(req *pb.Registration) providers.Provider
 
 var (
 	targetMap = map[pb.Target]string{
-		pb.Target_TARGET_AWS_UNSPECIFIED:      "aws/ec2",
-		pb.Target_TARGET_GCP:                  "gcp/gce",
-		pb.Target_TARGET_CLOUDFLARE:           "cloudflare",
-		pb.Target_TARGET_DIGITALOCEAN:         "digitalocean/droplet",
-		pb.Target_TARGET_DIGITALOCEAN_DROPLET: "digitalocean/droplet",
 		pb.Target_TARGET_AWS_EC2:              "aws/ec2",
-		pb.Target_TARGET_AWS_LAMBDA:           "aws/lambda",
-		pb.Target_TARGET_AWS_FARGATE:          "aws/fargate",
 		pb.Target_TARGET_AWS_ECS:              "aws/fargate",
+		pb.Target_TARGET_AWS_FARGATE:          "aws/fargate",
+		pb.Target_TARGET_AWS_LAMBDA:           "aws/lambda",
 		pb.Target_TARGET_AWS_ROUTE53:          "aws/route53",
-		pb.Target_TARGET_LINODE:               "linode",
-		pb.Target_TARGET_KUBERNETES:           "k8s/deployment",
-		pb.Target_TARGET_K8S:                  "k8s/deployment",
+		pb.Target_TARGET_AWS_SECURITY_GROUPS:  "aws/sg",
+		pb.Target_TARGET_AWS_UNSPECIFIED:      "aws/ec2",
+		pb.Target_TARGET_CLOUDFLARE:           "cloudflare",
+		pb.Target_TARGET_DIGITALOCEAN_DROPLET: "digitalocean/droplet",
+		pb.Target_TARGET_DIGITALOCEAN:         "digitalocean/droplet",
 		pb.Target_TARGET_DOCKER:               "docker",
+		pb.Target_TARGET_GCP:                  "gcp/gce",
+		pb.Target_TARGET_K8S:                  "k8s/deployment",
+		pb.Target_TARGET_KUBERNETES:           "k8s/deployment",
+		pb.Target_TARGET_LINODE:               "linode",
 		pb.Target_TARGET_MOCK_BLANK:           "test/blank",
 		pb.Target_TARGET_MOCK_TIMED:           "test/timed",
 	}
@@ -47,6 +49,8 @@ var (
 		"digitalocean/droplet": droplet.NewProvider,
 		"docker":               docker.NewProvider,
 		"aws/route53":          route53.NewProvider,
+		"aws/securitygroup":    security_groups.NewProvider,
+		"aws/sg":               security_groups.NewProvider, // sg alias for security_groups
 		"aws/lambda":           lambda.NewProvider,
 		"aws/ec2":              ec2.NewProvisioner,
 		"aws/fargate":          fargate.NewProvisioner,

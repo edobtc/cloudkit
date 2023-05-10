@@ -74,6 +74,7 @@ enum Target {
 
   TARGET_AWS_ECS = 14;
   TARGET_AWS_ROUTE53 = 15;
+  TARGET_AWS_SECURITY_GROUPS = 16;
 }
 
 message Registration {
