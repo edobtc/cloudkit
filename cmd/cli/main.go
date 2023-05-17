@@ -9,6 +9,7 @@ import (
 	"github.com/edobtc/cloudkit/cli/commands/relay"
 	"github.com/edobtc/cloudkit/cli/commands/resources"
 	"github.com/edobtc/cloudkit/cli/commands/resources/keys"
+	"github.com/edobtc/cloudkit/cli/commands/resources/rpc"
 	"github.com/edobtc/cloudkit/cli/commands/settings"
 	"github.com/edobtc/cloudkit/cli/commands/status"
 	"github.com/edobtc/cloudkit/version"
@@ -48,6 +49,7 @@ func bootstrap() {
 	bck.AddCommand(config.Cmd)
 	bck.AddCommand(events.Cmd)
 	bck.AddCommand(keys.Cmd)
+	bck.AddCommand(rpc.Cmd)
 	bck.AddCommand(relay.Cmd)
 	bck.AddCommand(settings.Cmd)
 	bck.AddCommand(status.Cmd)
