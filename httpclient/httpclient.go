@@ -17,7 +17,7 @@ const (
 	// IdleTimeout sets a sensible IdleTimeout
 	IdleTimeout = 90 * time.Second
 
-	// MaxIdleConnections sets sensible max idle connetions
+	// MaxIdleConnections sets sensible max idle connections
 	MaxIdleConnections = 100
 )
 
