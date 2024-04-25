@@ -5,6 +5,7 @@ import (
 	"os"
 	"sync"
 
+	"github.com/edobtc/cloudkit/config/lightning"
 	"github.com/edobtc/cloudkit/environment"
 	"github.com/edobtc/cloudkit/namespace"
 
@@ -68,7 +69,8 @@ type Config struct {
 
 	EventPublisherName string `mapstructure:"eventPublisherName"`
 
-	AWS AWS `mapstructure:"aws"`
+	AWS    AWS                    `mapstructure:"aws"`
+	Eclair lightning.EclairConfig `mapstructure:"eclair"`
 }
 
 type Notifications struct {

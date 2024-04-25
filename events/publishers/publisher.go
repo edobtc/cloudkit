@@ -1,4 +1,4 @@
-package delivery
+package publishers
 
 import (
 	"github.com/edobtc/cloudkit/events/publishers/aws/firehose"

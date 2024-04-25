@@ -4,11 +4,10 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/edobtc/cloudkit/events/formats"
+	formats "github.com/edobtc/cloudkit/events/formats/bitcoin"
 )
 
 func GetTransaction(ctx context.Context, event formats.BitcoindEvent) (string, error) {
-	// Global Count
 	fmt.Println(event)
 
 	return fmt.Sprintf("get transaction %s", event.TxID), nil

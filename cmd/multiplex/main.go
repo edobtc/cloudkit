@@ -5,6 +5,9 @@ import (
 	"os/signal"
 	"syscall"
 
+	"github.com/edobtc/cloudkit/cmd/multiplex/listen"
+	"github.com/edobtc/cloudkit/cmd/multiplex/start"
+
 	"github.com/edobtc/cloudkit/events/publishers/autoload"
 	"github.com/edobtc/cloudkit/events/subscribers/zmq"
 	"github.com/edobtc/cloudkit/logging"
@@ -13,8 +16,19 @@ import (
 	"github.com/spf13/cobra"
 )
 
+var (
+	source      string
+	destination string
+)
+
 func init() {
 	logging.Setup()
+
+	rootCmd.Flags().StringVarP(&source, "source", "s", "", "source to subscribe to")
+	rootCmd.Flags().StringVarP(&destination, "destination", "d", "", "destination to publish to")
+
+	rootCmd.AddCommand(start.Cmd)
+	rootCmd.AddCommand(listen.Cmd)
 }
 
 var rootCmd = &cobra.Command{
@@ -23,7 +37,8 @@ var rootCmd = &cobra.Command{
 
 	Run: func(cmd *cobra.Command, args []string) {
 		log.Info("starting")
-		srv := zmq.New()
+
+		srv := zmq.NewSubscriber()
 		log.Info(srv)
 
 		signal.Notify(srv.Close, os.Interrupt, syscall.SIGTERM, syscall.SIGINT)

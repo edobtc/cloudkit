@@ -21,26 +21,33 @@ type Subscriber struct {
 
 	destinations []delivery.Publisher
 
-	Close chan os.Signal
-	Wait  chan bool
-	Error chan error
+	listener chan interface{}
+	Close    chan os.Signal
+	Wait     chan bool
+	Error    chan error
 }
 
-func New() *Subscriber {
+func NewSubscriber() *Subscriber {
 	host := config.Read().Streams.ZeroMqListenAddr
 
 	log.Debug(host)
 
 	return &Subscriber{
-		sock:  goczmq.NewSubChanneler(host),
-		Close: make(chan os.Signal),
-		Wait:  make(chan bool),
-		Error: make(chan error),
+		sock: goczmq.NewSubChanneler(host),
+
+		listener: make(chan interface{}),
+		Close:    make(chan os.Signal),
+		Wait:     make(chan bool),
+		Error:    make(chan error),
 	}
 }
 
 func (s *Subscriber) Sock() *goczmq.Channeler {
 	return s.sock
+}
+
+func (s *Subscriber) Listen() <-chan interface{} {
+	return s.listener
 }
 
 func (s *Subscriber) AddDestination(d delivery.Publisher) int {

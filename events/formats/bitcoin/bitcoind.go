@@ -1,4 +1,4 @@
-package formats
+package bitcoin
 
 type BitcoindEvent struct {
 	BlockHash string

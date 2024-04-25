@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/edobtc/cloudkit/events/formats"
+	formats "github.com/edobtc/cloudkit/events/formats/bitcoin"
 )
 
 func GetBlock(ctx context.Context, event formats.BitcoindEvent) (string, error) {

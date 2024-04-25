@@ -1,8 +1,7 @@
-package subscriber
+package subscribers
 
-// WIP defining this
 type Subscriber interface {
-	Start() error
+	Start() chan bool
 	Detach() error
-	Listen() error
+	Listen() <-chan interface{}
 }
