@@ -69,7 +69,10 @@ type Config struct {
 
 	EventPublisherName string `mapstructure:"eventPublisherName"`
 
-	AWS    AWS                    `mapstructure:"aws"`
+	AWS AWS `mapstructure:"aws"`
+
+	// Lightning implementations
+	LND    lightning.LNDConfig    `mapstructure:"lnd"`
 	Eclair lightning.EclairConfig `mapstructure:"eclair"`
 }
 
@@ -129,6 +132,16 @@ func Read() *Config {
 
 		viper.SetDefault("environment", environment.Local)
 		viper.SetDefault("defaultNamespace", namespace.DefaultNamespace)
+
+		// lightning
+
+		// LND
+		viper.SetDefault("lnd.host", "127.0.0.1")
+		viper.SetDefault("lnd.port", 10009)
+
+		// Eclair
+		viper.SetDefault("eclair.host", "127.0.0.1")
+		viper.SetDefault("eclair.port", 8282)
 
 		// Node defaults
 		viper.SetDefault("node.host", DefaultNodeHost)

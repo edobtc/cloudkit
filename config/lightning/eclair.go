@@ -1,6 +1,6 @@
 package lightning
 
 type EclairConfig struct {
-	Host string
-	Port int
+	Host string `mapstructure:"host"`
+	Port int    `mapstructure:"port"`
 }

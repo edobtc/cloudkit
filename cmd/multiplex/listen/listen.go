@@ -23,8 +23,8 @@ func init() {
 }
 
 var Cmd = &cobra.Command{
-	Use:   "multiplex",
-	Short: "multiplex subscribes to events and rebroadcasts on different wires",
+	Use:   "listen",
+	Short: "listen",
 
 	Run: func(cmd *cobra.Command, args []string) {
 		log.Info("listen")

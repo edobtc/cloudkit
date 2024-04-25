@@ -8,8 +8,8 @@ import (
 )
 
 var CmdEclair = &cobra.Command{
-	Use:   "listen",
-	Short: "Listens on the specified source",
+	Use:   "eclair",
+	Short: "Listens on the specified eclair source",
 	Run: func(cmd *cobra.Command, args []string) {
 		logrus.Info("Listening on source: ", source)
 		subscriber, err := autoload.NewSubscriber("eclair")

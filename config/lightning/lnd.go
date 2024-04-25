@@ -1,7 +1,7 @@
 package lightning
 
 type LNDConfig struct {
-	Host     string
-	Port     int
-	Macaroon string
+	Host     string `mapstructure:"host"`
+	Port     int    `mapstructure:"port"`
+	Macaroon string `mapstructure:"macaroon"`
 }

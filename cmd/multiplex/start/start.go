@@ -18,11 +18,10 @@ var (
 )
 
 func init() {
-
 	logging.Setup()
 
-	Cmd.Flags().StringVarP(&source, "source", "s", "", "source to subscribe to")
-	Cmd.Flags().StringVarP(&destination, "destination", "d", "", "destination to publish to")
+	Cmd.Flags().StringVarP(&source, "source", "s", "eclair", "source to subscribe to")
+	Cmd.Flags().StringVarP(&destination, "destination", "d", "fs", "destination to publish to")
 }
 
 var Cmd = &cobra.Command{

@@ -8,8 +8,8 @@ import (
 )
 
 var CmdZmq = &cobra.Command{
-	Use:   "listen",
-	Short: "Listens on the specified source",
+	Use:   "zmq",
+	Short: "Listens on the specified zmq source",
 	Run: func(cmd *cobra.Command, args []string) {
 		logrus.Info("Listening on source: ", source)
 		subscriber, err := autoload.NewSubscriber("zmq")
