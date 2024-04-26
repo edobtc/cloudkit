@@ -11,6 +11,7 @@ import (
 	"github.com/edobtc/cloudkit/events/publishers/aws/lambda"
 	"github.com/edobtc/cloudkit/events/publishers/aws/sns"
 	"github.com/edobtc/cloudkit/events/publishers/filesystem"
+	"github.com/edobtc/cloudkit/events/publishers/rmq"
 	"github.com/edobtc/cloudkit/events/publishers/webhook"
 	"github.com/edobtc/cloudkit/events/publishers/websocket"
 )
@@ -36,6 +37,8 @@ func NewPublisher(adapter string) (delivery.Publisher, error) {
 		return webhook.NewPublisher()
 	case "websocket", "ws":
 		return websocket.NewPublisher()
+	case "rabbitmq", "rmq", "amqp":
+		return rmq.NewPublisher()
 	default:
 		return nil, ErrAdapterNotFound
 	}
