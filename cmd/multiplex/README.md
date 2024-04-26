@@ -7,3 +7,9 @@ cloudkit-multiplex is a means by which node operation events can be multiplexed 
 - eclair websocket subscription -> AWS SNS topic
 - bitcoin zmq subscription -> AWS kinesis stream
 - lightning/lnd invoice created hook (using rpc middleware interceptor) -> AWS SQS queue
+
+## Usage
+
+```
+multiplex start --source eclair --destination sns
+```
