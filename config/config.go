@@ -170,12 +170,12 @@ func Read() *Config {
 		viper.SetDefault("aws.dynamodbTablePrefix", "edobtc_cloudkit_")
 
 		// Event publishers
-		viper.SetDefault("eventPublisherName", "provision-events")
+		viper.SetDefault("eventPublisherName", "demo-stream")
 
 		viper.SetDefault("notifications.AllowWebsocketSubscribers", true)
 		viper.SetDefault("notifications.WebhookUrl", "https://127.0.0.1:8081/webhook")
-		viper.SetDefault("notifications.TopicArn", "arn:aws:sns:us-east-1:463883388309:payment-events")
-		viper.SetDefault("notifications.EventsQueue", "https://sqs.us-east-1.amazonaws.com/463883388309/platform-payment-events")
+		viper.SetDefault("notifications.TopicArn", "arn:aws:sns:us-east-1:351249512935:demo-topic")
+		viper.SetDefault("notifications.EventsQueue", "https://sqs.us-east-1.amazonaws.com/351249512935/demo-queue")
 
 		// Default settings for RabbitMQ
 		viper.SetDefault("rabbitMQ.URL", "amqp://guest:guest@localhost:5672/")
