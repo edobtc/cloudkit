@@ -6,12 +6,14 @@ import (
 	"github.com/edobtc/cloudkit/cli/commands/about"
 	"github.com/edobtc/cloudkit/cli/commands/config"
 	"github.com/edobtc/cloudkit/cli/commands/events"
+	"github.com/edobtc/cloudkit/cli/commands/multiplex"
 	"github.com/edobtc/cloudkit/cli/commands/relay"
 	"github.com/edobtc/cloudkit/cli/commands/resources"
 	"github.com/edobtc/cloudkit/cli/commands/resources/keys"
 	"github.com/edobtc/cloudkit/cli/commands/resources/rpc"
 	"github.com/edobtc/cloudkit/cli/commands/settings"
 	"github.com/edobtc/cloudkit/cli/commands/status"
+
 	"github.com/edobtc/cloudkit/version"
 
 	log "github.com/sirupsen/logrus"
@@ -50,6 +52,7 @@ func bootstrap() {
 	bck.AddCommand(events.Cmd)
 	bck.AddCommand(keys.Cmd)
 	bck.AddCommand(rpc.Cmd)
+	bck.AddCommand(multiplex.Cmd)
 	bck.AddCommand(relay.Cmd)
 	bck.AddCommand(settings.Cmd)
 	bck.AddCommand(status.Cmd)
