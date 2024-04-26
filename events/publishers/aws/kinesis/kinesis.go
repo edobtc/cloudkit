@@ -3,16 +3,15 @@ package kinesis
 import (
 	"time"
 
+	"github.com/edobtc/cloudkit/aws/session"
 	"github.com/edobtc/cloudkit/config"
 
 	"github.com/aws/aws-sdk-go/aws"
-	"github.com/aws/aws-sdk-go/aws/session"
+
 	"github.com/aws/aws-sdk-go/service/kinesis"
 
 	log "github.com/sirupsen/logrus"
 )
-
-var ApplicationPublisher = NewPublisher()
 
 type Publisher struct {
 	Name   string
@@ -21,7 +20,7 @@ type Publisher struct {
 }
 
 func NewPublisher() *Publisher {
-	s := session.Must(session.NewSession())
+	s := session.NewDynamicSession()
 
 	return &Publisher{
 		Buffer: []byte{},
@@ -40,7 +39,6 @@ func (s *Publisher) Send(data []byte) error {
 	if err != nil {
 		return err
 	}
-
 	log.Debug("Publisher debug: ", po.SequenceNumber)
 
 	return nil

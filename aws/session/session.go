@@ -1,11 +1,16 @@
 package session
 
-import "github.com/aws/aws-sdk-go/aws/session"
+import (
+	"github.com/aws/aws-sdk-go/aws"
+	"github.com/aws/aws-sdk-go/aws/session"
+)
 
 // NewDynamicSession is a factory to emit sessions
 // relevant to the current config, ie:
 //
 // dev, local, sandbox, production
 func NewDynamicSession() *session.Session {
-	return session.Must(session.NewSession())
+	return session.Must(session.NewSession(
+		aws.NewConfig().WithRegion("us-east-1"),
+	))
 }

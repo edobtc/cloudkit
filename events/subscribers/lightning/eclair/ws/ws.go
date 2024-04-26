@@ -53,7 +53,6 @@ func (s *EclairSubscriber) Start() chan bool {
 		for {
 			select {
 			case msg := <-channel:
-				fmt.Println("message received: ", msg)
 				s.listener <- msg
 			case <-s.Close:
 				s.Wait <- true
