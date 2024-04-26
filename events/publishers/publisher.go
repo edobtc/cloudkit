@@ -5,6 +5,7 @@ import (
 	"github.com/edobtc/cloudkit/events/publishers/aws/kinesis"
 	"github.com/edobtc/cloudkit/events/publishers/aws/sns"
 	"github.com/edobtc/cloudkit/events/publishers/filesystem"
+	"github.com/edobtc/cloudkit/events/publishers/rmq"
 )
 
 // Publisher defines the interface for event
@@ -23,4 +24,5 @@ var (
 	_ Publisher = (*kinesis.Publisher)(nil)
 	_ Publisher = (*filesystem.Publisher)(nil)
 	_ Publisher = (*sns.Publisher)(nil)
+	_ Publisher = (*rmq.Publisher)(nil)
 )

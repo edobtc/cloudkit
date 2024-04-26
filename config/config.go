@@ -69,11 +69,30 @@ type Config struct {
 
 	EventPublisherName string `mapstructure:"eventPublisherName"`
 
+	// Publishers
+	RabbitMQ RabbitMQConfig `mapstructure:"rmq"`
+
 	AWS AWS `mapstructure:"aws"`
 
 	// Lightning implementations
 	LND    lightning.LNDConfig    `mapstructure:"lnd"`
 	Eclair lightning.EclairConfig `mapstructure:"eclair"`
+}
+
+type RabbitMQConfig struct {
+	URL          string `mapstructure:"URL"`
+	QueueName    string `mapstructure:"QueueName"`
+	ExchangeName string `mapstructure:"ExchangeName"`
+	Mandatory    bool   `mapstructure:"Mandatory"`
+	Immediate    bool   `mapstructure:"Immediate"`
+	DeliveryMode int    `mapstructure:"DeliveryMode"`
+	ContentType  string `mapstructure:"ContentType"`
+
+	// Optional
+	Durable    bool `mapstructure:"Durable"`
+	AutoDelete bool `mapstructure:"AutoDelete"`
+	Exclusive  bool `mapstructure:"Exclusive"`
+	NoWait     bool `mapstructure:"NoWait"`
 }
 
 type Notifications struct {
@@ -158,6 +177,18 @@ func Read() *Config {
 		viper.SetDefault("notifications.TopicArn", "arn:aws:sns:us-east-1:463883388309:payment-events")
 		viper.SetDefault("notifications.EventsQueue", "https://sqs.us-east-1.amazonaws.com/463883388309/platform-payment-events")
 
+		// Default settings for RabbitMQ
+		viper.SetDefault("rabbitMQ.URL", "amqp://guest:guest@localhost:5672/")
+		viper.SetDefault("rabbitMQ.QueueName", "defaultQueue")
+		viper.SetDefault("rabbitMQ.ExchangeName", "defaultExchange")
+		viper.SetDefault("rabbitMQ.Durable", true)
+		viper.SetDefault("rabbitMQ.AutoDelete", false)
+		viper.SetDefault("rabbitMQ.Exclusive", false)
+		viper.SetDefault("rabbitMQ.NoWait", false)
+		viper.SetDefault("rabbitMQ.Mandatory", false)
+		viper.SetDefault("rabbitMQ.Immediate", false)
+		viper.SetDefault("rabbitMQ.ContentType", "text/plain")
+
 		// StreamConfig
 		viper.SetDefault("streams.zeroMQListenAddr", "tcp://127.0.0.1:5558")
 
@@ -202,6 +233,19 @@ func Read() *Config {
 		_ = viper.BindEnv("grpcListen", "GRPC_LISTEN")
 
 		_ = viper.BindEnv("defaultNamespace", "DEFAULT_NAMESPACE")
+
+		// publishers
+		// rabbit
+		_ = viper.BindEnv("rabbitMQ.URL", "RMQ_URL")
+		_ = viper.BindEnv("rabbitMQ.QueueName", "RMQ_QUEUE_NAME")
+		_ = viper.BindEnv("rabbitMQ.ExchangeName", "RMQ_EXCHANGE_NAME")
+		_ = viper.BindEnv("rabbitMQ.Durable", "RMQ_DURABLE")
+		_ = viper.BindEnv("rabbitMQ.AutoDelete", "RMQ_AUTO_DELETE")
+		_ = viper.BindEnv("rabbitMQ.Exclusive", "RMQ_EXCLUSIVE")
+		_ = viper.BindEnv("rabbitMQ.NoWait", "RMQ_NO_WAIT")
+		_ = viper.BindEnv("rabbitMQ.Mandatory", "RMQ_MANDATORY")
+		_ = viper.BindEnv("rabbitMQ.Immediate", "RMQ_IMMEDIATE")
+		_ = viper.BindEnv("rabbitMQ.ContentType", "RMQ_CONTENT_TYPE")
 
 		if err := viper.ReadInConfig(); err != nil {
 			if _, ok := err.(viper.ConfigFileNotFoundError); ok {
