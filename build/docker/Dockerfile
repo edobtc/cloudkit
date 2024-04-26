@@ -2,7 +2,7 @@ FROM golang:1.22-alpine3.19 AS build
 
 RUN apk update
 
-RUN apk --no-cache add gcc g++ make ca-certificates
+RUN apk --no-cache add gcc g++ make ca-certificates pkgconfig zeromq zeromq-dev libsodium-dev czmq-dev
 RUN apk update -qq && apk add git
 
 RUN mkdir -p /go/src/github.com/edobtc/cloudkit
