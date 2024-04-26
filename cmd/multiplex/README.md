@@ -1,12 +1,9 @@
-# cloudkit-relay
+# cloudkit-multiplex
 
 # About
 
-cloudkit-relay is a event/transaction relay batcher. It's goal is to sit between an event/transaction source and buffer collections of events into larger payloads, forwarding them when configured properties are met, such as:
+cloudkit-multiplex is a means by which node operation events can be multiplexed to other cloud native transports, for example:
 
-- total sats amount
-- event/transaction count
-- time elapsed
-- data size
-
-The goal is to act as a buffer to reduce the number of broadcast events
+- eclair websocket subscription -> AWS SNS topic
+- bitcoin zmq subscription -> AWS kinesis stream
+- lightning/lnd invoice created hook (using rpc middleware interceptor) -> AWS SQS queue
