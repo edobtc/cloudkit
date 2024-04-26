@@ -1,4 +1,4 @@
-FROM golang:1.19-alpine3.17 AS build
+FROM golang:1.22-alpine3.19 AS build
 
 RUN apk update
 
@@ -16,12 +16,13 @@ RUN go build -o ./bin/gateway ./cmd/gateway
 RUN go build -o ./bin/agent ./cmd/agent
 RUN go build -o ./bin/controlplane ./cmd/controlplane
 RUN go build -o ./bin/cli ./cmd/cli
+RUN go build -o ./bin/multiplex ./cmd/multiplex
 RUN go build -o ./bin/relay ./cmd/relay
 RUN go build -o ./bin/sink ./cmd/sink
 RUN go build -o ./bin/functions ./cmd/functions
 
 # Build production image
-FROM alpine:3.17
+FROM alpine:3.19
 
 RUN apk update
 RUN apk add ca-certificates
@@ -33,6 +34,7 @@ COPY --from=build /go/src/github.com/edobtc/cloudkit/bin/agent /var/bin/agent
 COPY --from=build /go/src/github.com/edobtc/cloudkit/bin/cli /var/bin/cli
 COPY --from=build /go/src/github.com/edobtc/cloudkit/bin/btck /var/bin/btck
 COPY --from=build /go/src/github.com/edobtc/cloudkit/bin/gateway /var/bin/gateway
+COPY --from=build /go/src/github.com/edobtc/cloudkit/bin/multiplex /var/bin/multiplex
 COPY --from=build /go/src/github.com/edobtc/cloudkit/bin/controlplane /var/bin/controlplane
 COPY --from=build /go/src/github.com/edobtc/cloudkit/bin/relay /var/bin/relay
 COPY --from=build /go/src/github.com/edobtc/cloudkit/bin/sink /var/bin/sink

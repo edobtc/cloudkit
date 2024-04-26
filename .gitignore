@@ -7,6 +7,8 @@ Thumbs.db
 scratch.go
 analytics-event-stream
 
+/bin
+
 *.pem
 *.srl
 
