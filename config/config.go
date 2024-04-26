@@ -67,7 +67,9 @@ type Config struct {
 	RedisPassword string `mapstructure:"redisPassword"`
 	RedisDB       int    `mapstructure:"redisDB"`
 
-	EventPublisherName string `mapstructure:"eventPublisherName"`
+	EventPublisherName        string `mapstructure:"eventPublisherName"`
+	EventPublisherARN         string `mapstructure:"eventPublisherARN"`
+	EventPublisherSQSQueueURL string `mapstructure:"eventPublisherSQSQueueURL"`
 
 	// Publishers
 	RabbitMQ RabbitMQConfig `mapstructure:"rmq"`
@@ -159,6 +161,7 @@ func Read() *Config {
 		viper.SetDefault("lnd.port", 10009)
 
 		// Eclair
+		viper.SetDefault("eclair.scheme", "http")
 		viper.SetDefault("eclair.host", "127.0.0.1")
 		viper.SetDefault("eclair.port", 8282)
 
@@ -171,6 +174,8 @@ func Read() *Config {
 
 		// Event publishers
 		viper.SetDefault("eventPublisherName", "demo-stream")
+		viper.SetDefault("eventPublisherARN", "arn:aws:sns:us-east-1:351249512935:demo-topic")
+		viper.SetDefault("eventPublisherSQSQueueURL", "https://sqs.us-east-1.amazonaws.com/351249512935/demo-queue")
 
 		viper.SetDefault("notifications.AllowWebsocketSubscribers", true)
 		viper.SetDefault("notifications.WebhookUrl", "https://127.0.0.1:8081/webhook")

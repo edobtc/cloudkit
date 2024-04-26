@@ -36,7 +36,7 @@ func (s *Publisher) Send(data []byte) error {
 
 	s.f.Sync()
 
-	log.Info("Publisher debug: ", id)
+	log.Debug("Publisher debug: ", id)
 
 	return nil
 }

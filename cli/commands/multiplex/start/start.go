@@ -32,11 +32,15 @@ var Cmd = &cobra.Command{
 		ctx, cancel := context.WithCancel(context.Background())
 		defer cancel()
 
+		logrus.Info("subscribing to source: ", source)
+
 		s, err := sourceLoader.NewSubscriber(source)
 		if err != nil {
 			logrus.Error("Failed to create subscriber: ", err)
 			return
 		}
+
+		logrus.Info("publishing to destination: ", destination)
 
 		d, err := destinationLoader.NewPublisher(destination)
 		if err != nil {

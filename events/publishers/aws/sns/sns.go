@@ -26,7 +26,7 @@ func NewPublisher() *Publisher {
 	return &Publisher{
 		Buffer: []byte{},
 		svc:    sns.New(s),
-		Topic:  config.Read().Notifications.SNSTopicArn,
+		Topic:  config.Read().EventPublisherARN,
 	}
 }
 

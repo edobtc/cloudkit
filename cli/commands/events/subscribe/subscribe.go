@@ -3,17 +3,13 @@ package subscribe
 import (
 	"fmt"
 
+	"github.com/edobtc/cloudkit/config"
 	subscriber "github.com/edobtc/cloudkit/events/subscribers/aws/sqs"
 
 	"github.com/edobtc/cloudkit/cli/commands/events/subscribe/debug"
 
 	log "github.com/sirupsen/logrus"
 	"github.com/spf13/cobra"
-)
-
-var (
-	SQSQueueURL    = "https://sqs.us-east-1.amazonaws.com/463883388309/platform-payment-events"
-	SQSQueueURLDev = ""
 )
 
 func init() {
@@ -25,7 +21,9 @@ var Cmd = &cobra.Command{
 	Use:   "subscribe",
 	Short: "subscribe",
 	Run: func(cmd *cobra.Command, args []string) {
-		listener, err := subscriber.NewSQSSubscriber(SQSQueueURL)
+		sqsQueueURL := config.Read().EventPublisherSQSQueueURL
+
+		listener, err := subscriber.NewSQSSubscriber(sqsQueueURL)
 
 		if err != nil {
 			log.Error(err)

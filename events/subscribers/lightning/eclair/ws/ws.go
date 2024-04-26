@@ -1,9 +1,13 @@
 package ws
 
 import (
+	"fmt"
 	"os"
 
+	"github.com/edobtc/cloudkit/config"
+
 	eclair "github.com/edobtc/go-eclair"
+	"github.com/sirupsen/logrus"
 )
 
 type EclairSubscriber struct {
@@ -18,6 +22,16 @@ type EclairSubscriber struct {
 
 func NewSubscriber() *EclairSubscriber {
 	c := eclair.NewClient()
+	host := fmt.Sprintf(
+		"%s://%s:%d",
+		config.Read().Eclair.Scheme,
+		config.Read().Eclair.Host,
+		config.Read().Eclair.Port,
+	)
+
+	logrus.Debug(host)
+
+	c = c.WithBaseURL(host)
 
 	return &EclairSubscriber{
 		client: c,
@@ -39,6 +53,7 @@ func (s *EclairSubscriber) Start() chan bool {
 		for {
 			select {
 			case msg := <-channel:
+				fmt.Println("message received: ", msg)
 				s.listener <- msg
 			case <-s.Close:
 				s.Wait <- true
