@@ -21,8 +21,7 @@ func init() {
 
 var rootCmd = &cobra.Command{
 	Use:   "cloudkit-event-sink",
-	Short: "cloudkit-event-sink is a handler for broadcasting events to, which are aggregated and turned into transactions",
-
+	Short: "cloudkit-event-sink is a handler for watching events, aggregating them, or reponding to particular event conditions and taking action",
 	Run: func(cmd *cobra.Command, args []string) {
 		srv := server.NewServer()
 

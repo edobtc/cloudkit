@@ -21,7 +21,7 @@ func init() {
 
 var rootCmd = &cobra.Command{
 	Use:   "cloudkit-relay",
-	Short: "cloudkit-relay runs a handler for collecting keysend event streams and batch processing them",
+	Short: "cloudkit-relay runs a handler for collecting events event streams and batch processing them",
 
 	Run: func(cmd *cobra.Command, args []string) {
 		srv := server.NewServer()
