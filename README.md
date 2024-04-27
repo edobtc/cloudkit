@@ -45,6 +45,11 @@ A cli toolkit of helpers for interacting with nodes, or cloudkit itself
 
 A permission control proxy that can sit in front of any type of node, and add a layer regarding authentication, authorization and reliability
 
+
+# Vision
+
+![pyramid](./docs/images/cloudkit-pyramid.svg)
+
 ## Support
 
 We endeavor to support all parts of the "Bitcoin ecosystem" that developers may be building upon, currently Bitcoin core, and the lightning implementation. If there is something that you think should be supported, or that is new that we don't know about, let us know.
@@ -86,3 +91,5 @@ To generate:
 #### Testing
 
 verify things are set up and working by running `go test ./...` from the root and if there is a fail, something has gone wrong
+
+![logo](./docs/images/logo.png)
