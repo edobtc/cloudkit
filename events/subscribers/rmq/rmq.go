@@ -9,6 +9,8 @@ type RMQSubscriber struct {
 	connection *amqp.Connection
 	channel    *amqp.Channel
 	queueName  string
+
+	Messages chan interface{}
 }
 
 func NewSubscriber() (*RMQSubscriber, error) {
@@ -36,15 +38,17 @@ func NewSubscriber() (*RMQSubscriber, error) {
 		return nil, err
 	}
 
+	msgs := make(chan interface{})
+
 	return &RMQSubscriber{
 		connection: conn,
 		channel:    ch,
 		queueName:  queueName,
+		Messages:   msgs,
 	}, nil
 }
 
 func (r *RMQSubscriber) Start() chan bool {
-	// Start consuming messages
 	msgs, err := r.channel.Consume(
 		r.queueName,
 		"",
@@ -61,13 +65,18 @@ func (r *RMQSubscriber) Start() chan bool {
 	done := make(chan bool)
 	go func() {
 		for d := range msgs {
-			// Process message
-			// Placeholder: Print message to console
-			println("Received message: ", string(d.Body))
+			if r.Messages == nil {
+				close(done)
+				break
+			}
+			r.Messages <- d.Body
 		}
-		done <- true
 	}()
 	return done
+}
+
+func (r *RMQSubscriber) Listen() <-chan interface{} {
+	return r.Messages
 }
 
 func (r *RMQSubscriber) Detach() error {
@@ -75,28 +84,4 @@ func (r *RMQSubscriber) Detach() error {
 		return err
 	}
 	return r.connection.Close()
-}
-
-func (r *RMQSubscriber) Listen() <-chan interface{} {
-	msgs, err := r.channel.Consume(
-		r.queueName,
-		"",
-		config.Read().RabbitMQ.AutoAck,
-		config.Read().RabbitMQ.Exclusive,
-		false,
-		config.Read().RabbitMQ.NoWait,
-		nil,
-	)
-	if err != nil {
-		panic(err)
-	}
-
-	output := make(chan interface{})
-	go func() {
-		for d := range msgs {
-			output <- d.Body
-		}
-		close(output)
-	}()
-	return output
 }
