@@ -89,6 +89,7 @@ type RabbitMQConfig struct {
 	Immediate    bool   `mapstructure:"Immediate"`
 	DeliveryMode int    `mapstructure:"DeliveryMode"`
 	ContentType  string `mapstructure:"ContentType"`
+	AutoAck      bool   `mapstructure:"AutoAck"`
 
 	// Optional
 	Durable    bool `mapstructure:"Durable"`
@@ -183,16 +184,17 @@ func Read() *Config {
 		viper.SetDefault("notifications.EventsQueue", "https://sqs.us-east-1.amazonaws.com/351249512935/demo-queue")
 
 		// Default settings for RabbitMQ
-		viper.SetDefault("rabbitMQ.URL", "amqp://guest:guest@localhost:5672/")
-		viper.SetDefault("rabbitMQ.QueueName", "defaultQueue")
-		viper.SetDefault("rabbitMQ.ExchangeName", "defaultExchange")
-		viper.SetDefault("rabbitMQ.Durable", true)
-		viper.SetDefault("rabbitMQ.AutoDelete", false)
-		viper.SetDefault("rabbitMQ.Exclusive", false)
-		viper.SetDefault("rabbitMQ.NoWait", false)
-		viper.SetDefault("rabbitMQ.Mandatory", false)
-		viper.SetDefault("rabbitMQ.Immediate", false)
-		viper.SetDefault("rabbitMQ.ContentType", "text/plain")
+		viper.SetDefault("rmq.URL", "amqp://guest:guest@localhost:5672/")
+		viper.SetDefault("rmq.QueueName", "defaultQueue")
+		viper.SetDefault("rmq.ExchangeName", "")
+		viper.SetDefault("rmq.AutoAck", true)
+		viper.SetDefault("rmq.Durable", true)
+		viper.SetDefault("rmq.AutoDelete", false)
+		viper.SetDefault("rmq.Exclusive", false)
+		viper.SetDefault("rmq.NoWait", false)
+		viper.SetDefault("rmq.Mandatory", false)
+		viper.SetDefault("rmq.Immediate", false)
+		viper.SetDefault("rmq.ContentType", "text/plain")
 
 		// StreamConfig
 		viper.SetDefault("streams.zeroMQListenAddr", "tcp://127.0.0.1:5558")

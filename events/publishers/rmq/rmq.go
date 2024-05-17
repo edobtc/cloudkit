@@ -1,6 +1,8 @@
 package rmq
 
 import (
+	"fmt"
+
 	"github.com/edobtc/cloudkit/config"
 	"github.com/streadway/amqp"
 )
@@ -13,6 +15,8 @@ type Publisher struct {
 
 func NewPublisher() (*Publisher, error) {
 	queueName := config.Read().RabbitMQ.QueueName
+
+	fmt.Println(config.Read().RabbitMQ.URL)
 
 	conn, err := amqp.Dial(config.Read().RabbitMQ.URL)
 	if err != nil {
@@ -41,6 +45,24 @@ func NewPublisher() (*Publisher, error) {
 		channel:    ch,
 		queueName:  queueName,
 	}, nil
+}
+
+func (r *Publisher) Listen() (<-chan amqp.Delivery, error) {
+	queueName := config.Read().RabbitMQ.QueueName
+
+	msgs, err := r.channel.Consume(
+		queueName,                        // queue
+		"",                               // consumer
+		true,                             //config.Read().RabbitMQ.AutoAck,  // auto-ack
+		config.Read().RabbitMQ.Exclusive, // exclusive
+		false,                            // no-local
+		config.Read().RabbitMQ.NoWait,    // no-wait
+		nil,                              // args
+	)
+	if err != nil {
+		return nil, err
+	}
+	return msgs, nil
 }
 
 func (r *Publisher) Send(data []byte) error {
